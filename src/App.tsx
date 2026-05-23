@@ -141,6 +141,17 @@ export const App: React.FC = () => {
                 if (data.aiResult) {
                   setAiResult(data.aiResult);
                 }
+                // Auto-append shared calculation to local search history for easy reference
+                try {
+                  const raw = localStorage.getItem("loveodds_search_history");
+                  const prev = raw ? JSON.parse(raw) : [];
+                  const filtered = prev.filter((c: any) => JSON.stringify(c) !== JSON.stringify(data.criteria));
+                  const updated = [data.criteria, ...filtered].slice(0, 3);
+                  localStorage.setItem("loveodds_search_history", JSON.stringify(updated));
+                  setHistory(updated);
+                } catch (e) {
+                  console.error("Failed to append shared result to history:", e);
+                }
                 const docTransition = document as any;
                 if (docTransition.startViewTransition) {
                   docTransition.startViewTransition(() => {

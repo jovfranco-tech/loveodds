@@ -88,7 +88,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ type, queryText, has
             />
           ))}
           <div className="absolute inset-9 rounded-full bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark flex items-center justify-center shadow-shd-1">
-            <LoIcon name="sparkle" size={18} />
+            <LoIcon name="sparkle" size={18} className="animate-spin" style={{ animationDuration: '6s' }} />
           </div>
         </div>
       </div>
