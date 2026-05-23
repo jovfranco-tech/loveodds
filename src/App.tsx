@@ -279,7 +279,16 @@ export const App: React.FC = () => {
                 <div className="px-6 mt-4 flex flex-col gap-3 lo-fade-in select-none">
                   <div className="flex items-center gap-3 text-ink-3 dark:text-ink-4">
                     <div className="flex-1 h-[0.5px] bg-ink/10 dark:bg-ink-dark/10" />
-                    <span className="font-mono text-[9.5px] tracking-[0.18em] uppercase">Búsquedas recientes</span>
+                    <span className="font-mono text-[9.5px] tracking-[0.18em] uppercase shrink-0">Búsquedas recientes</span>
+                    <button 
+                      onClick={() => {
+                        localStorage.removeItem("loveodds_search_history");
+                        setHistory([]);
+                      }}
+                      className="font-mono text-[9px] uppercase tracking-wider text-accent dark:text-accent-3 hover:underline cursor-pointer shrink-0"
+                    >
+                      [Limpiar]
+                    </button>
                     <div className="flex-1 h-[0.5px] bg-ink/10 dark:bg-ink-dark/10" />
                   </div>
                   
