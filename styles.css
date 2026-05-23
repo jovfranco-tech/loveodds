@@ -1,0 +1,619 @@
+/* =============================================================
+   LoveOdds MX — design tokens + base styles
+   ============================================================= */
+
+:root {
+  /* — Type — */
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-ui:       "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* — Light palette (default) — */
+  --bg:           #F6F1EC;     /* warm bone */
+  --bg-elev:     #FFFFFF;
+  --bg-deep:     #ECE3DC;
+  --ink:          #1A1418;     /* near-black with warm cast */
+  --ink-2:       #4A3F46;
+  --ink-3:       #8A7B82;
+  --ink-4:       #B8AAB1;
+  --line:        rgba(26, 20, 24, 0.08);
+  --line-2:      rgba(26, 20, 24, 0.14);
+
+  /* — Accent (overridden by JS) — */
+  --accent:       #7A1F3D;     /* deep wine */
+  --accent-2:    #C0395E;     /* coral wine */
+  --accent-3:    #E8AFA0;     /* warm peach */
+  --accent-ink:  #FFFFFF;     /* readable on accent */
+
+  /* — Semantic — */
+  --pos:          #1F6B4A;
+  --warn:         #9A6B14;
+  --neg:          #8E2A2A;
+
+  /* — Geometry — */
+  --r-sm:  10px;
+  --r-md:  16px;
+  --r-lg:  22px;
+  --r-xl:  28px;
+
+  /* — Shadow — */
+  --shd-1: 0 1px 2px rgba(26,20,24,.04), 0 6px 16px rgba(26,20,24,.06);
+  --shd-2: 0 1px 2px rgba(26,20,24,.06), 0 10px 32px rgba(26,20,24,.10);
+}
+
+/* Dark palette */
+.theme-dark {
+  --bg:          #0E0B14;
+  --bg-elev:    #18131F;
+  --bg-deep:    #07050B;
+  --ink:         #F4EEF1;
+  --ink-2:      #C4B8C1;
+  --ink-3:      #7E727B;
+  --ink-4:      #4A4049;
+  --line:       rgba(244, 238, 241, 0.08);
+  --line-2:     rgba(244, 238, 241, 0.14);
+  --shd-1: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px rgba(0,0,0,.4);
+  --shd-2: 0 1px 2px rgba(0,0,0,.5), 0 10px 32px rgba(0,0,0,.5);
+  --pos:        #5BB58A;
+  --warn:       #E0B25E;
+  --neg:        #E48383;
+}
+
+/* =============================================================
+   Global
+   ============================================================= */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-ui);
+  font-feature-settings: "ss01", "cv11";
+  color: var(--ink);
+  background: #2A2229;            /* page surround */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+.lo-stage {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 80px;
+  position: relative;
+  background:
+    radial-gradient(60% 60% at 20% 0%, rgba(192,57,94,0.10), transparent 60%),
+    radial-gradient(80% 80% at 100% 100%, rgba(122,31,61,0.16), transparent 55%),
+    linear-gradient(180deg, #1E181D 0%, #0F0B0E 100%);
+}
+
+.lo-stage.theme-light-stage {
+  background:
+    radial-gradient(60% 60% at 20% 0%, rgba(192,57,94,0.10), transparent 60%),
+    radial-gradient(80% 80% at 100% 100%, rgba(122,31,61,0.10), transparent 55%),
+    linear-gradient(180deg, #EBE1DA 0%, #D8C9C0 100%);
+}
+
+/* =============================================================
+   App canvas inside iPhone
+   ============================================================= */
+.lo-app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.lo-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.lo-scroll::-webkit-scrollbar { display: none; }
+
+/* =============================================================
+   Typography
+   ============================================================= */
+.t-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+.t-serif {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.t-serif-i { font-style: italic; }
+
+.t-display {
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.t-h1 {
+  font-family: var(--font-display);
+  font-size: 42px;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+
+.t-body {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+}
+.t-body-sm {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.t-caption {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ink-3);
+  letter-spacing: 0.005em;
+}
+
+/* =============================================================
+   Components
+   ============================================================= */
+
+/* Top bar inside app */
+.lo-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 54px 20px 8px;
+  position: relative;
+  z-index: 5;
+}
+.lo-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.lo-wordmark > span:nth-child(2) { padding-right: 4px; }
+.lo-wordmark .glyph {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-1px);
+  margin-right: 4px;
+}
+.lo-wordmark em {
+  font-style: italic;
+  font-feature-settings: "ss01";
+}
+.lo-wordmark .mx {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-left: 2px;
+  padding: 2px 5px;
+  border: 0.5px solid var(--line-2);
+  border-radius: 4px;
+}
+
+.lo-icon-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 0.5px solid var(--line-2);
+  background: var(--bg-elev);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default;
+  color: var(--ink-2);
+  flex-shrink: 0;
+}
+
+/* Card */
+.lo-card {
+  background: var(--bg-elev);
+  border: 0.5px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px;
+}
+.lo-card-flat {
+  background: transparent;
+  border: 0.5px solid var(--line-2);
+  border-radius: var(--r-lg);
+  padding: 18px;
+}
+
+/* Chip */
+.lo-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  border: 0.5px solid var(--line-2);
+  font-size: 12.5px;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: default;
+  white-space: nowrap;
+}
+.lo-chip .k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.lo-chip.solid {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.lo-chip.tinted {
+  background: rgba(192, 57, 94, 0.08);
+  border-color: rgba(192, 57, 94, 0.18);
+  color: var(--accent);
+}
+.lo-chip.tinted .k { color: var(--accent); opacity: .75; }
+
+/* Buttons */
+.lo-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: default;
+  transition: transform .12s ease, opacity .12s ease;
+  border: 0;
+  white-space: nowrap;
+}
+.lo-btn:active { transform: scale(0.985); }
+.lo-btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+.lo-btn-accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.lo-btn-ghost {
+  background: transparent;
+  color: var(--ink-2);
+  border: 0.5px solid var(--line-2);
+}
+.lo-btn-full { width: 100%; }
+
+/* Bottom bar (fixed CTA) */
+.lo-bottombar {
+  padding: 12px 16px 16px;
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+  position: relative;
+  z-index: 4;
+}
+
+/* Stat block */
+.lo-stat-num {
+  font-family: var(--font-display);
+  font-feature-settings: "lnum";
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+
+/* Divider with label (Mexican-poster style rule) */
+.lo-rule {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--ink-3);
+}
+.lo-rule:before, .lo-rule:after {
+  content: ""; flex: 1; height: 0.5px; background: var(--line-2);
+}
+.lo-rule span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer { 0% { opacity: .35; } 50% { opacity: .65; } 100% { opacity: .35; } }
+.lo-shimmer { animation: shimmer 1.4s ease-in-out infinite; }
+
+/* Fade-in */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lo-fade-in { animation: fadeUp .35s cubic-bezier(.2,.7,.2,1) both; }
+
+/* Dot pattern */
+.lo-dots {
+  background-image: radial-gradient(circle at 1px 1px, var(--line-2) 1px, transparent 0);
+  background-size: 14px 14px;
+}
+
+/* Pulse for processing */
+@keyframes pulse {
+  0%   { opacity: .3; transform: scale(.7); }
+  50%  { opacity: 1;  transform: scale(1);  }
+  100% { opacity: .3; transform: scale(.7); }
+}
+.lo-pulse-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+/* Token row (label / value) */
+.lo-kv {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 0.5px solid var(--line);
+}
+.lo-kv:last-child { border-bottom: 0; }
+.lo-kv .k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lo-kv .v {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: right;
+  letter-spacing: -0.005em;
+}
+
+/* Funnel bar */
+.lo-fbar {
+  position: relative;
+  height: 28px;
+  background: var(--bg-deep);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lo-fbar > .fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  background: var(--ink);
+  border-radius: 8px;
+  transform-origin: left center;
+  transition: transform .9s cubic-bezier(.2,.7,.2,1);
+}
+
+/* Confidence pip */
+.lo-pip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.lo-pip .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--pos);
+}
+.lo-pip.med .dot { background: var(--warn); }
+.lo-pip.low .dot { background: var(--neg); }
+
+/* Selectable item active state */
+.lo-tab {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 8px 0 10px;
+  border-bottom: 1.5px solid transparent;
+}
+.lo-tab.on {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* Editable chip pill (criteria) */
+.lo-criterion {
+  background: var(--bg-elev);
+  border: 0.5px solid var(--line-2);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lo-criterion .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lo-criterion .val {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  margin-top: 2px;
+}
+
+/* Big-percent treatment */
+.lo-bignum {
+  font-family: var(--font-display);
+  font-size: 124px;
+  line-height: 0.85;
+  letter-spacing: -0.045em;
+  font-feature-settings: "lnum","tnum";
+  color: var(--ink);
+}
+.lo-bignum .pct {
+  font-size: 0.36em;
+  letter-spacing: -0.01em;
+  color: var(--ink-3);
+  vertical-align: 0.45em;
+  margin-left: 4px;
+}
+
+/* Decorative arrow used between funnel rows */
+.lo-down {
+  width: 1px;
+  height: 14px;
+  background: var(--line-2);
+  margin-left: 12px;
+  position: relative;
+}
+.lo-down:after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -2.5px;
+  width: 6px; height: 6px;
+  border-right: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line-2);
+  transform: rotate(45deg);
+}
+
+/* Tag for source confidence levels */
+.lo-tag {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--bg-deep);
+  color: var(--ink-3);
+  border: 0.5px solid var(--line-2);
+}
+.lo-tag.demo { color: var(--warn); }
+.lo-tag.ready { color: var(--pos); }
+.lo-tag.live { color: var(--accent); }
+
+/* Bottom navigation (in result flow) */
+.lo-bnav {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 12px;
+  border-top: 0.5px solid var(--line);
+  background: var(--bg);
+}
+.lo-bnav button {
+  flex: 1;
+  padding: 9px 6px;
+  background: transparent;
+  border: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  cursor: default;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.lo-bnav button.on {
+  color: var(--ink);
+  background: var(--bg-elev);
+}
+.lo-bnav button.on .ind {
+  background: var(--accent);
+}
+.lo-bnav .ind {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ink-4);
+}
+
+/* Share card */
+.lo-share-card {
+  background: linear-gradient(160deg, var(--bg-elev) 0%, var(--bg-deep) 100%);
+  border: 0.5px solid var(--line-2);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Generic absolute-fill background grain */
+.lo-grain {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(192,57,94,.08), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(122,31,61,.12), transparent 50%);
+  pointer-events: none;
+}
+
+/* Mini sparkline-ish bars */
+.lo-spark {
+  display: flex; align-items: flex-end; gap: 2px;
+  height: 18px;
+}
+.lo-spark div {
+  width: 3px;
+  background: var(--ink-4);
+  border-radius: 1px;
+}
+
+/* Accent text */
+.t-accent { color: var(--accent); }
+.t-ink    { color: var(--ink); }
+.t-ink2   { color: var(--ink-2); }
+.t-ink3   { color: var(--ink-3); }

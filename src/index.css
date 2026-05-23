@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: "Instrument Serif", "Times New Roman", serif;
+    --font-ui:       "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --bg:           #F6F1EC;
+    --bg-elev:     #FFFFFF;
+    --bg-deep:     #ECE3DC;
+    --ink:          #1A1418;
+    --ink-2:       #4A3F46;
+    --ink-3:       #8A7B82;
+    --ink-4:       #B8AAB1;
+    --line:        rgba(26, 20, 24, 0.08);
+    --line-2:      rgba(26, 20, 24, 0.14);
+
+    --accent:       #7A1F3D;
+    --accent-2:    #C0395E;
+    --accent-3:    #E8AFA0;
+    --accent-ink:  #FFFFFF;
+
+    --pos:          #1F6B4A;
+    --warn:         #9A6B14;
+    --neg:          #8E2A2A;
+
+    --r-sm:  10px;
+    --r-md:  16px;
+    --r-lg:  22px;
+    --r-xl:  28px;
+
+    --shd-1: 0 1px 2px rgba(26,20,24,.04), 0 6px 16px rgba(26,20,24,.06);
+    --shd-2: 0 1px 2px rgba(26,20,24,.06), 0 10px 32px rgba(26,20,24,.10);
+  }
+
+  .theme-dark {
+    --bg:          #0E0B14;
+    --bg-elev:    #18131F;
+    --bg-deep:    #07050B;
+    --ink:         #F4EEF1;
+    --ink-2:      #C4B8C1;
+    --ink-3:      #7E727B;
+    --ink-4:      #4A4049;
+    --line:       rgba(244, 238, 241, 0.08);
+    --line-2:     rgba(244, 238, 241, 0.14);
+    --shd-1: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px rgba(0,0,0,.4);
+    --shd-2: 0 1px 2px rgba(0,0,0,.5), 0 10px 32px rgba(0,0,0,.5);
+    --pos:        #5BB58A;
+    --warn:       #E0B25E;
+    --neg:        #E48383;
+  }
+
+  body {
+    @apply antialiased text-ink bg-[#2A2229] font-ui;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+}
+
+/* Base custom classes to match the handoff and styles.css */
+.lo-stage {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 80px;
+  position: relative;
+  background:
+    radial-gradient(60% 60% at 20% 0%, rgba(192,57,94,0.10), transparent 60%),
+    radial-gradient(80% 80% at 100% 100%, rgba(122,31,61,0.16), transparent 55%),
+    linear-gradient(180deg, #1E181D 0%, #0F0B0E 100%);
+}
+
+.lo-stage.theme-light-stage {
+  background:
+    radial-gradient(60% 60% at 20% 0%, rgba(192,57,94,0.10), transparent 60%),
+    radial-gradient(80% 80% at 100% 100%, rgba(122,31,61,0.10), transparent 55%),
+    linear-gradient(180deg, #EBE1DA 0%, #D8C9C0 100%);
+}
+
+.lo-app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.lo-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.lo-scroll::-webkit-scrollbar { display: none; }
+
+/* Grain pattern */
+.lo-grain {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(192,57,94,.08), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(122,31,61,.12), transparent 50%);
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lo-fade-in {
+  animation: fadeUp 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.lo-tab {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 8px 0 10px;
+  border-bottom: 1.5px solid transparent;
+}
+.lo-tab.on {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}

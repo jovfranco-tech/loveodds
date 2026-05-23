@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LoveOdds MX — Design Handoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font-display:"Instrument Serif",serif;
+    --font-ui:"Inter Tight",system-ui,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,monospace;
+
+    --bg:#F6F1EC; --bg-elev:#FFFFFF; --bg-deep:#ECE3DC;
+    --ink:#1A1418; --ink-2:#4A3F46; --ink-3:#8A7B82; --ink-4:#B8AAB1;
+    --line:rgba(26,20,24,.08); --line-2:rgba(26,20,24,.14);
+    --accent:#7A1F3D; --accent-2:#C0395E; --accent-3:#E8AFA0;
+    --pos:#1F6B4A; --warn:#9A6B14; --neg:#8E2A2A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.55;letter-spacing:-.005em}
+  a{color:var(--accent);text-decoration:none;border-bottom:.5px solid var(--accent-2)}
+  a:hover{color:var(--accent-2)}
+
+  /* layout */
+  .doc{max-width:1180px;margin:0 auto;padding:0 32px}
+  .top{padding:48px 0 32px;border-bottom:.5px solid var(--line)}
+  .grid{display:grid;grid-template-columns:240px 1fr;gap:48px;align-items:start;padding-top:40px}
+  nav.toc{position:sticky;top:24px;font-size:13px}
+  nav.toc h6{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+  nav.toc ol{list-style:none;padding:0;margin:0;counter-reset:t}
+  nav.toc li{counter-increment:t;padding:6px 0;border-top:.5px solid var(--line);color:var(--ink-2)}
+  nav.toc li:first-child{border-top:0}
+  nav.toc li::before{content:"0" counter(t) "  ";font-family:var(--font-mono);font-size:10px;color:var(--ink-4);letter-spacing:.08em}
+  nav.toc a{color:var(--ink-2);border:0}
+  nav.toc a:hover{color:var(--ink)}
+  main{min-width:0;padding-bottom:120px}
+
+  /* hero */
+  .word{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:22px}
+  .word .glyph{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+  .word em{font-style:italic}
+  .word .mx{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--ink-3);padding:2px 5px;border:.5px solid var(--line-2);border-radius:4px;margin-left:2px}
+  .eyebrow{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+  h1.t{font-family:var(--font-display);font-size:72px;line-height:.95;letter-spacing:-.022em;margin:18px 0 14px;font-weight:400}
+  h1.t i{color:var(--accent)}
+  p.sub{font-size:18px;color:var(--ink-2);max-width:680px;margin:0}
+
+  /* sections */
+  section.s{padding:64px 0 8px;scroll-margin-top:24px;border-top:.5px solid var(--line)}
+  section.s:first-of-type{border-top:0}
+  section.s .num{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase}
+  section.s h2{font-family:var(--font-display);font-size:48px;line-height:1;letter-spacing:-.018em;margin:6px 0 20px;font-weight:400}
+  section.s h2 i{color:var(--accent)}
+  section.s>p.intro{font-size:17px;color:var(--ink-2);max-width:720px;margin:0 0 32px}
+
+  h3{font-family:var(--font-display);font-size:28px;letter-spacing:-.012em;margin:36px 0 8px;font-weight:400}
+  h4{font-family:var(--font-ui);font-size:14px;font-weight:600;letter-spacing:.005em;margin:24px 0 8px;color:var(--ink)}
+  p{margin:0 0 12px;color:var(--ink-2)}
+  ul,ol{margin:0 0 12px;padding-left:20px;color:var(--ink-2)}
+  li{margin:4px 0}
+  li::marker{color:var(--ink-4)}
+
+  hr.rule{border:0;border-top:.5px solid var(--line);margin:24px 0}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0 20px;background:var(--bg-elev);border:.5px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:.5px solid var(--line)}
+  tr:last-child td{border-bottom:0}
+  th{background:var(--bg-deep);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-family:var(--font-mono)}
+  td.mono{font-family:var(--font-mono);font-size:12px;color:var(--ink)}
+  td.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;text-align:right}
+  td b{color:var(--ink);font-weight:600}
+
+  /* cards */
+  .card{background:var(--bg-elev);border:.5px solid var(--line);border-radius:18px;padding:18px;margin:10px 0}
+  .card-flat{background:transparent;border:.5px dashed var(--line-2);border-radius:14px;padding:14px;margin:10px 0}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media (max-width:780px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+  /* swatches */
+  .sw{display:flex;flex-direction:column;gap:6px}
+  .sw .chip{height:64px;border-radius:10px;border:.5px solid var(--line-2);position:relative;overflow:hidden}
+  .sw .meta{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
+  .sw .meta b{color:var(--ink);font-weight:600}
+
+  /* code blocks */
+  pre,code{font-family:var(--font-mono);font-size:12px}
+  pre{background:#1A1418;color:#F6F1EC;padding:16px 18px;border-radius:14px;overflow:auto;line-height:1.55}
+  pre code{color:inherit;background:transparent;padding:0}
+  code{background:var(--bg-deep);padding:1px 5px;border-radius:4px;color:var(--ink);font-size:.88em}
+  .tok{color:#E8AFA0}
+  .str{color:#9DC189}
+  .com{color:#8A7B82;font-style:italic}
+
+  /* badges / pills */
+  .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--bg-deep);color:var(--ink-3);border:.5px solid var(--line-2)}
+  .badge.pos{color:var(--pos)}
+  .badge.warn{color:var(--warn)}
+  .badge.neg{color:var(--accent)}
+  .dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.85}
+
+  /* rarity bar */
+  .rar-row{display:grid;grid-template-columns:24px 110px 1fr 80px;gap:12px;align-items:center;padding:10px 0;border-bottom:.5px solid var(--line);font-size:13.5px}
+  .rar-row:last-child{border-bottom:0}
+  .rar-row .swatch{width:24px;height:24px;border-radius:6px}
+  .rar-row .name{font-weight:600;color:var(--ink)}
+  .rar-row .range{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);text-align:right}
+  .rar-row .desc{color:var(--ink-2);font-size:13px;line-height:1.4}
+
+  /* funnel for result examples */
+  .funnel{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+  .funnel .row{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:center}
+  .funnel .row .l{font-size:13.5px;color:var(--ink)}
+  .funnel .row .l small{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase;margin-top:2px}
+  .funnel .row .n{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:14px;color:var(--ink);text-align:right;font-weight:600}
+  .funnel .bar{height:6px;background:var(--bg-deep);border-radius:4px;overflow:hidden;grid-column:1/-1}
+  .funnel .bar>div{height:100%;background:var(--ink);border-radius:4px}
+  .funnel .bar.term>div{background:var(--accent)}
+
+  /* result hero example */
+  .res{background:var(--bg-elev);border:.5px solid var(--line);border-radius:22px;padding:24px;margin:18px 0}
+  .res .pct{font-family:var(--font-display);font-size:84px;line-height:.9;letter-spacing:-.04em;color:var(--ink)}
+  .res .pct sup{font-size:.36em;color:var(--ink-3);font-style:normal;letter-spacing:0;margin-left:4px;vertical-align:0.45em}
+  .res .quote{font-family:var(--font-display);font-style:italic;font-size:20px;line-height:1.35;color:var(--ink);margin:10px 0 12px}
+  .res .quote::before{content:"\201C";color:var(--accent);margin-right:2px}
+  .res .quote::after{content:"\201D";color:var(--accent);margin-left:2px}
+
+  /* tone do/dont */
+  .do,.dont{padding:14px 16px;border-radius:14px;font-size:14px}
+  .do{background:rgba(31,107,74,.07);border:.5px solid rgba(31,107,74,.18);color:#1F4F3A}
+  .dont{background:rgba(142,42,42,.07);border:.5px solid rgba(142,42,42,.18);color:#7A2424}
+  .do::before,.dont::before{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px;font-weight:600;color:inherit;opacity:.7}
+  .do::before{content:"✓ Decir"}
+  .dont::before{content:"✕ Evitar"}
+
+  /* checklist */
+  .check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid var(--line);font-size:14px;color:var(--ink-2)}
+  .check:last-child{border-bottom:0}
+  .check .box{width:16px;height:16px;border-radius:4px;border:1px solid var(--ink-4);flex-shrink:0;margin-top:3px}
+
+  /* layout diagram blocks */
+  .layout{background:var(--bg-deep);border-radius:14px;padding:14px;margin:10px 0;font-family:var(--font-mono);font-size:11px;color:var(--ink-2);line-height:1.7;white-space:pre;overflow-x:auto}
+
+  /* small chip */
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--bg-elev);border:.5px solid var(--line-2);font-size:12.5px;color:var(--ink-2);font-weight:500;margin:2px 4px 2px 0;white-space:nowrap}
+  .pill .k{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+
+  /* footer */
+  footer{padding:48px 0;border-top:.5px solid var(--line);color:var(--ink-3);font-size:13px}
+
+  /* print */
+  @media print{
+    nav.toc{display:none}
+    .grid{grid-template-columns:1fr}
+    body{font-size:12pt}
+    section.s{page-break-inside:avoid}
+    pre{background:#f4eee8;color:#1A1418;border:.5px solid var(--line)}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="doc" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+    <div class="word"><span class="glyph"></span><span>Love<em>Odds</em></span><span class="mx">MX</span></div>
+    <div class="eyebrow">Design Handoff · v1.0 · Mayo 2026</div>
+  </div>
+  <div class="doc">
+    <h1 class="t">Design <i>Handoff</i></h1>
+    <p class="sub">Especificación completa de LoveOdds MX para construcción en Lovable, Gemini o Claude Code. Sistema de diseño, librería de componentes, layouts, ejemplos de resultado, guía de tono, animaciones y checklist final — todo en un documento.</p>
+  </div>
+</header>
+
+<div class="doc grid">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc">
+    <h6>Contenido</h6>
+    <ol>
+      <li><a href="#ds">Design System</a></li>
+      <li><a href="#cl">Component Library</a></li>
+      <li><a href="#ld">Layout Desktop</a></li>
+      <li><a href="#lm">Layout Mobile</a></li>
+      <li><a href="#ex1">Resultado · Ejemplo 1</a></li>
+      <li><a href="#ex2">Resultado · Ejemplo 2</a></li>
+      <li><a href="#tone">Reglas de tono</a></li>
+      <li><a href="#rar">Estados de rareza</a></li>
+      <li><a href="#conf">Estados de confianza</a></li>
+      <li><a href="#anim">Animaciones</a></li>
+      <li><a href="#build">Handoff para construcción</a></li>
+      <li><a href="#check">Checklist final</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="ds" class="s">
+  <div class="num">01 · Foundations</div>
+  <h2>Design <i>System</i></h2>
+  <p class="intro">Aesthetic: <b>data intelligence meets modern romance</b>. Premium, editorial, calmly mexicano. Mobile-first. Sin clichés de dating app, sin estética de calculadora.</p>
+
+  <h3>Paleta · Primaria (Wine)</h3>
+  <p>La paleta default. Comunica seriedad, calidez romántica adulta y un tono editorial mexicano sin caer en cliché.</p>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:#7A1F3D"></div><div class="meta"><span>accent · wine</span><b>#7A1F3D</b></div></div>
+    <div class="sw"><div class="chip" style="background:#C0395E"></div><div class="meta"><span>accent-2 · coral</span><b>#C0395E</b></div></div>
+    <div class="sw"><div class="chip" style="background:#E8AFA0"></div><div class="meta"><span>accent-3 · peach</span><b>#E8AFA0</b></div></div>
+  </div>
+
+  <h3>Paletas alternativas</h3>
+  <p>Otras direcciones aceptadas por el sistema. Cualquier triple <code>[primary, secondary, light]</code> se puede plugear vía el tweak de paleta.</p>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:linear-gradient(90deg,#1B1F4B 33%,#6C4BB6 33% 66%,#E94F7C 66%)"></div><div class="meta"><span>Indigo · Violet · Pink</span><b>#1B1F4B</b></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(90deg,#0F1B3D 33%,#B23A6B 33% 66%,#FF7E5F 66%)"></div><div class="meta"><span>Navy · Magenta · Sunset</span><b>#0F1B3D</b></div></div>
+    <div class="sw"><div class="chip" style="background:linear-gradient(90deg,#2E1F47 33%,#A65DBD 33% 66%,#F2C2D2 66%)"></div><div class="meta"><span>Plum · Lilac · Blush</span><b>#2E1F47</b></div></div>
+  </div>
+
+  <h3>Neutrales</h3>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:#F6F1EC"></div><div class="meta"><span>bg · bone</span><b>#F6F1EC</b></div></div>
+    <div class="sw"><div class="chip" style="background:#FFFFFF;border-color:var(--line)"></div><div class="meta"><span>bg-elev · white</span><b>#FFFFFF</b></div></div>
+    <div class="sw"><div class="chip" style="background:#ECE3DC"></div><div class="meta"><span>bg-deep</span><b>#ECE3DC</b></div></div>
+    <div class="sw"><div class="chip" style="background:#1A1418"></div><div class="meta"><span>ink</span><b>#1A1418</b></div></div>
+    <div class="sw"><div class="chip" style="background:#4A3F46"></div><div class="meta"><span>ink-2</span><b>#4A3F46</b></div></div>
+    <div class="sw"><div class="chip" style="background:#8A7B82"></div><div class="meta"><span>ink-3</span><b>#8A7B82</b></div></div>
+  </div>
+
+  <h3>Dark mode</h3>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:#0E0B14"></div><div class="meta"><span>bg-dark</span><b>#0E0B14</b></div></div>
+    <div class="sw"><div class="chip" style="background:#18131F"></div><div class="meta"><span>bg-elev-dark</span><b>#18131F</b></div></div>
+    <div class="sw"><div class="chip" style="background:#F4EEF1"></div><div class="meta"><span>ink-dark</span><b>#F4EEF1</b></div></div>
+  </div>
+
+  <h3>Estados de rareza</h3>
+  <p>Cada nivel tiene un color asignado. Se usa como acento del rarity badge, no como fondo de la tarjeta.</p>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:#5F8F6E"></div><div class="meta"><span>común</span><b>#5F8F6E</b></div></div>
+    <div class="sw"><div class="chip" style="background:#4A6FA5"></div><div class="meta"><span>selectivo</span><b>#4A6FA5</b></div></div>
+    <div class="sw"><div class="chip" style="background:#6B5B9E"></div><div class="meta"><span>muy selectivo</span><b>#6B5B9E</b></div></div>
+    <div class="sw"><div class="chip" style="background:#9A4A7A"></div><div class="meta"><span>estad. raro</span><b>#9A4A7A</b></div></div>
+    <div class="sw"><div class="chip" style="background:#7A1F3D"></div><div class="meta"><span>aguja en pajar</span><b>#7A1F3D</b></div></div>
+    <div class="sw"><div class="chip" style="background:#3D0F1F"></div><div class="meta"><span>unicornio</span><b>#3D0F1F</b></div></div>
+  </div>
+
+  <h3>Confianza estadística</h3>
+  <div class="grid-3">
+    <div class="sw"><div class="chip" style="background:#1F6B4A"></div><div class="meta"><span>alta</span><b>#1F6B4A</b></div></div>
+    <div class="sw"><div class="chip" style="background:#9A6B14"></div><div class="meta"><span>media</span><b>#9A6B14</b></div></div>
+    <div class="sw"><div class="chip" style="background:#8E2A2A"></div><div class="meta"><span>baja / demo</span><b>#8E2A2A</b></div></div>
+  </div>
+
+  <h3>Tipografía</h3>
+  <p>Tres familias con roles claros. Todas free, vía Google Fonts.</p>
+  <table>
+    <tr><th>Rol</th><th>Familia</th><th>Uso</th></tr>
+    <tr><td><b>Display</b></td><td class="mono">Instrument Serif</td><td>Headlines, números grandes, citas, frases editoriales. Italic para énfasis.</td></tr>
+    <tr><td><b>UI</b></td><td class="mono">Inter Tight</td><td>Body, botones, labels de tarjeta, copy general. Pesos 400/500/600/700.</td></tr>
+    <tr><td><b>Mono</b></td><td class="mono">JetBrains Mono</td><td>Eyebrows, tags estadísticos, deltas (×0.13), códigos de fuente, cifras tabulares.</td></tr>
+  </table>
+
+  <h4>Escala tipográfica</h4>
+  <table>
+    <tr><th>Token</th><th>Familia</th><th>Tamaño</th><th>Line-height</th><th>Letter</th><th>Uso</th></tr>
+    <tr><td class="mono">display</td><td class="mono">serif</td><td class="num">56–124</td><td class="num">.85–.95</td><td class="num">-.045em</td><td>Hero headline, bignum %</td></tr>
+    <tr><td class="mono">h1</td><td class="mono">serif</td><td class="num">42</td><td class="num">.98</td><td class="num">-.015em</td><td>Section title mobile</td></tr>
+    <tr><td class="mono">h2</td><td class="mono">serif</td><td class="num">28</td><td class="num">1.05</td><td class="num">-.01em</td><td>Subsection</td></tr>
+    <tr><td class="mono">h3</td><td class="mono">serif</td><td class="num">22</td><td class="num">1.1</td><td class="num">0</td><td>Card heading</td></tr>
+    <tr><td class="mono">body</td><td class="mono">sans</td><td class="num">15</td><td class="num">1.45</td><td class="num">-.005em</td><td>Párrafos</td></tr>
+    <tr><td class="mono">body-sm</td><td class="mono">sans</td><td class="num">13.5</td><td class="num">1.4</td><td class="num">0</td><td>Card body</td></tr>
+    <tr><td class="mono">caption</td><td class="mono">sans</td><td class="num">12</td><td class="num">1.35</td><td class="num">.005em</td><td>Helpers, footnotes</td></tr>
+    <tr><td class="mono">eyebrow</td><td class="mono">mono</td><td class="num">10.5</td><td class="num">1</td><td class="num">.14em / UPPER</td><td>Etiquetas, navegación</td></tr>
+  </table>
+
+  <h3>Espaciado</h3>
+  <p>Escala base 4. Todos los espaciados son múltiplos.</p>
+  <table>
+    <tr><th>Token</th><th>px</th><th>Uso</th></tr>
+    <tr><td class="mono">--sp-1</td><td class="num">4</td><td>Gap mínimo entre chips, icon padding</td></tr>
+    <tr><td class="mono">--sp-2</td><td class="num">8</td><td>Gap entre botones del bottombar</td></tr>
+    <tr><td class="mono">--sp-3</td><td class="num">12</td><td>Padding interior chip, gap entre filas</td></tr>
+    <tr><td class="mono">--sp-4</td><td class="num">16</td><td>Margen externo de cards en mobile</td></tr>
+    <tr><td class="mono">--sp-5</td><td class="num">20</td><td>Padding lateral de pantalla</td></tr>
+    <tr><td class="mono">--sp-6</td><td class="num">24</td><td>Padding interior de cards hero</td></tr>
+    <tr><td class="mono">--sp-8</td><td class="num">32</td><td>Separación entre secciones</td></tr>
+    <tr><td class="mono">--sp-12</td><td class="num">48</td><td>Separación entre bloques mayores (desktop)</td></tr>
+  </table>
+
+  <h3>Radius, sombras &amp; bordes</h3>
+  <table>
+    <tr><th>Token</th><th>Valor</th><th>Uso</th></tr>
+    <tr><td class="mono">--r-sm</td><td class="num">10</td><td>Chips internos, swatches</td></tr>
+    <tr><td class="mono">--r-md</td><td class="num">16</td><td>Botones, criterios editables</td></tr>
+    <tr><td class="mono">--r-lg</td><td class="num">22</td><td>Cards estándar</td></tr>
+    <tr><td class="mono">--r-xl</td><td class="num">28</td><td>Hero result card, share cards</td></tr>
+    <tr><td class="mono">--shd-1</td><td class="mono">0 1px 2px rgba(26,20,24,.04), 0 6px 16px rgba(26,20,24,.06)</td><td>Cards en reposo</td></tr>
+    <tr><td class="mono">--shd-2</td><td class="mono">0 1px 2px rgba(26,20,24,.06), 0 10px 32px rgba(26,20,24,.10)</td><td>Cards hover / modales</td></tr>
+    <tr><td class="mono">--line</td><td class="mono">.5px solid rgba(26,20,24,.08)</td><td>Bordes sutiles</td></tr>
+  </table>
+
+  <h3>Tokens · CSS variables</h3>
+  <pre><code><span class="com">/* Plug-and-play en :root */</span>
+<span class="tok">:root</span> {
+  <span class="com">--font-display</span>: <span class="str">"Instrument Serif"</span>, serif;
+  <span class="com">--font-ui</span>:      <span class="str">"Inter Tight"</span>, system-ui, sans-serif;
+  <span class="com">--font-mono</span>:    <span class="str">"JetBrains Mono"</span>, ui-monospace, monospace;
+
+  <span class="com">--bg</span>:#F6F1EC;  <span class="com">--bg-elev</span>:#FFFFFF;  <span class="com">--bg-deep</span>:#ECE3DC;
+  <span class="com">--ink</span>:#1A1418; <span class="com">--ink-2</span>:#4A3F46; <span class="com">--ink-3</span>:#8A7B82; <span class="com">--ink-4</span>:#B8AAB1;
+  <span class="com">--accent</span>:#7A1F3D; <span class="com">--accent-2</span>:#C0395E; <span class="com">--accent-3</span>:#E8AFA0;
+
+  <span class="com">--pos</span>:#1F6B4A;  <span class="com">--warn</span>:#9A6B14;  <span class="com">--neg</span>:#8E2A2A;
+
+  <span class="com">--r-sm</span>:10px;  <span class="com">--r-md</span>:16px;  <span class="com">--r-lg</span>:22px;  <span class="com">--r-xl</span>:28px;
+}</code></pre>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="cl" class="s">
+  <div class="num">02 · Components</div>
+  <h2>Component <i>Library</i></h2>
+  <p class="intro">Cada componente tiene propósito, contenido, estados, interacciones, comportamiento mobile y microcopy recomendado.</p>
+
+  <h3>AppHeader</h3>
+  <p><b>Propósito.</b> Brand + navegación contextual + acceso a Share y menú.</p>
+  <ul>
+    <li><b>Contenido.</b> Wordmark <code>Love<i>Odds</i> MX</code> · back chevron en pantallas internas · acción contextual derecha (compartir, menú).</li>
+    <li><b>Estados.</b> Default · scrolled (sombra inferior sutil) · transparente sobre share card.</li>
+    <li><b>Mobile.</b> Wordmark a la izquierda; títulos de paso como eyebrow centrado (<code>02 · CRITERIOS</code>).</li>
+    <li><b>Microcopy.</b> Sin tagline. La navegación se nombra con números (<code>01 · BÚSQUEDA</code>).</li>
+  </ul>
+
+  <h3>HeroSection</h3>
+  <ul>
+    <li><b>Propósito.</b> Establecer aspiracional + serio en menos de 5 segundos.</li>
+    <li><b>Contenido.</b> Eyebrow con dot pulsante · headline editorial de 3 líneas · subhead corta · mock dashboard con probability + mini-funnel + cita interpretativa · CTA primario + secundario · sección "Cómo funciona" · disclaimer ético.</li>
+    <li><b>Estados.</b> Estático. CTA tiene press state (<code>scale .985</code>).</li>
+    <li><b>Interacciones.</b> Tap en CTA primario abre Input. Secundario abre flujo pre-cargado con ejemplo.</li>
+    <li><b>Microcopy CTAs.</b> <i>Calcular mi probabilidad</i> · <i>Ver un ejemplo</i>.</li>
+  </ul>
+
+  <h3>AIQueryInput</h3>
+  <ul>
+    <li><b>Propósito.</b> Convertir lenguaje natural en filtros demográficos.</li>
+    <li><b>Contenido.</b> Avatar de "Analista LoveOdds" con dot accent · textarea con tipografía display · contador de caracteres · botón <i>Interpretar</i> con icono sparkle.</li>
+    <li><b>Estados.</b> Empty (placeholder visible) · typing · ready (texto > 12 caracteres habilita Interpretar) · interpreting (skeleton). </li>
+    <li><b>Interacciones.</b> Auto-resize textarea, máx 200 caracteres. Tap en chip de ejemplo precarga el texto. Enter+Cmd dispara Interpretar.</li>
+    <li><b>Mobile.</b> El input ocupa ~38% de la pantalla. Botón Interpretar fijo abajo-derecha del card del input (no del viewport).</li>
+    <li><b>Microcopy placeholder.</b> "Busco un hombre en CDMX, 32 años, soltero, sin hijos, 1.80 m y $100,000 MXN al mes…"</li>
+  </ul>
+
+  <h3>ExamplePromptChips</h3>
+  <ul>
+    <li><b>Propósito.</b> Reducir fricción del primer uso.</li>
+    <li><b>Contenido.</b> 3 chips con label corto + numeración 01–03.</li>
+    <li><b>Microcopy.</b> "Hombre 32 · 1.80 m · $100k" · "Mujer colombiana 28 · CDMX" · "Profesionista 30–35 · sin hijos".</li>
+  </ul>
+
+  <h3>ParsedCriteriaPanel</h3>
+  <ul>
+    <li><b>Propósito.</b> Mostrar la traducción del lenguaje natural a criterios estructurados, editables.</li>
+    <li><b>Contenido.</b> Lista vertical de <code>EditableCriteriaChip</code>. Helper "Toca cualquier criterio para ajustarlo antes de calcular."</li>
+    <li><b>Estados.</b> Recién parseado (todos visibles) · editando (un chip expandido con opciones) · validando.</li>
+  </ul>
+
+  <h3>EditableCriteriaChip</h3>
+  <ul>
+    <li><b>Propósito.</b> Fila editable: <i>label mono</i> + <i>valor</i> + icono lápiz.</li>
+    <li><b>Estados.</b> Default · open (muestra 3 chips de opciones rápidas + "Ver todas") · disabled (sin valor detectado, opaco).</li>
+    <li><b>Interacciones.</b> Tap expande. Tap en opción la aplica y colapsa. Long-press borra el criterio (<code>= "Sin filtro"</code>).</li>
+  </ul>
+
+  <h3>MainProbabilityCard</h3>
+  <ul>
+    <li><b>Propósito.</b> Pieza hero del resultado, diseñada para screenshot.</li>
+    <li><b>Contenido.</b> Eyebrow "Probabilidad estimada" · <code>BigPercent</code> auto-escalable · equivalencia humana (mono) + N estimada · <code>RarityBadge</code> con tier scale · cita interpretativa · <code>FilterImpactBadge</code> con filtro más restrictivo.</li>
+    <li><b>Estados.</b> Cargando (skeleton de 4 rectángulos) · loaded (fade-up 350ms).</li>
+    <li><b>Mobile.</b> Ocupa el viewport con scroll vertical natural. El BigPercent baja de 124px a 78px según largo del número.</li>
+  </ul>
+
+  <h3>RarityBadge</h3>
+  <ul>
+    <li><b>Propósito.</b> Comunicar tier de rareza con palabra + escala visual.</li>
+    <li><b>Contenido.</b> Eyebrow "Nivel de rareza" + nombre del tier en itálica display + barra de 6 segmentos.</li>
+    <li><b>Estados.</b> 6 niveles (ver §08).</li>
+    <li><b>Interacciones.</b> Tap abre tooltip explicando rango porcentual del tier.</li>
+  </ul>
+
+  <h3>ConfidenceBadge</h3>
+  <ul>
+    <li><b>Propósito.</b> Comunicar transparencia metodológica.</li>
+    <li><b>Contenido.</b> Pip de color + label mono UPPER.</li>
+    <li><b>Variantes.</b> <span class="badge pos"><span class="dot"></span>alta confianza</span> <span class="badge warn"><span class="dot"></span>media</span> <span class="badge neg"><span class="dot"></span>demo</span></li>
+  </ul>
+
+  <h3>FilterImpactBadge</h3>
+  <ul>
+    <li><b>Propósito.</b> Identificar el filtro que más recortó el universo.</li>
+    <li><b>Contenido.</b> Card insertada en MainProbabilityCard. Eyebrow "Filtro más restrictivo" + nombre del filtro + delta porcentual rojo-vino (<code>−96%</code>).</li>
+  </ul>
+
+  <h3>PopulationFunnel</h3>
+  <ul>
+    <li><b>Propósito.</b> Mostrar reducción paso a paso desde población base hasta resultado.</li>
+    <li><b>Contenido.</b> Lista vertical de <code>FunnelStep</code>. Header con resumen <i>De 3.42M a 59.</i></li>
+    <li><b>Mobile.</b> Cada paso es una fila completa de ancho (label + N tabular + barra debajo). No es una gráfica clásica de embudo: es una <b>cascada vertical de barras proporcionales</b>, mucho más legible.</li>
+    <li><b>Animación.</b> Cada barra se rellena con staggered delay de 60ms · easing <code>cubic-bezier(.2,.7,.2,1)</code> · 1.1s.</li>
+  </ul>
+
+  <h3>FunnelStep</h3>
+  <ul>
+    <li><b>Contenido.</b> Index 00–08 + label + N + fuente (mono UPPER) + delta multiplicador (×0.13).</li>
+    <li><b>Estados.</b> Default · terminal (color accent, barra más gruesa) · disabled si N=0.</li>
+  </ul>
+
+  <h3>RealityCheckCard</h3>
+  <ul>
+    <li><b>Propósito.</b> Síntesis ejecutiva del resultado, generada por la IA.</li>
+    <li><b>Contenido.</b> Avatar "Analista LoveOdds" · headline display de 1 línea · párrafo body · KV list (Significado · Filtro más restrictivo · Tier · Confianza · Mayor incertidumbre) · footer dashed con "Lo que no se puede concluir".</li>
+    <li><b>Microcopy.</b> Ver §07.</li>
+  </ul>
+
+  <h3>WhatIfOptimizer / WhatIfScenarioCard</h3>
+  <ul>
+    <li><b>Propósito.</b> Ofrecer simulaciones que amplíen el universo sin pedir al usuario que "baje sus estándares".</li>
+    <li><b>Contenido por card.</b> Título del ajuste · explicación 1 línea · multiplicador display grande (×3.4) · indicador de impacto (bajo/medio/alto) con 3 barras · botón <i>Simular</i>.</li>
+    <li><b>Interacciones.</b> Tap en <i>Simular</i> aplica el cambio a <code>criteria</code> y refresca el resultado completo. Hay botón flotante de undo (snackbar 6s).</li>
+    <li><b>Microcopy.</b> "Ajustes que amplían tu universo" · "No son recomendaciones — son simulaciones."</li>
+  </ul>
+
+  <h3>StatisticalSourcesPanel / SourceConfidenceCard</h3>
+  <ul>
+    <li><b>Propósito.</b> Comunicar las fuentes públicas detrás de cada cálculo.</li>
+    <li><b>Contenido por card.</b> Nombre de la fuente · qué aporta · status badge (Datos demo / Listo para integrar / En vivo) · año · barra horizontal de confianza 0–100.</li>
+    <li><b>Microcopy.</b> Cierra con nota metodológica: "Este MVP usa datos simulados para demostrar la experiencia. En producción debe conectarse a microdatos y tabulados oficiales."</li>
+  </ul>
+
+  <h3>EthicsDisclaimer</h3>
+  <ul>
+    <li><b>Propósito.</b> Anclar la responsabilidad ética del producto.</li>
+    <li><b>Contenido.</b> Card flat con icono lock + dos párrafos (qué no hace · cómo trata datos).</li>
+    <li><b>Ubicación.</b> Visible en hero, al final del resultado, y antes de share.</li>
+  </ul>
+
+  <h3>ShareResultCard</h3>
+  <ul>
+    <li><b>Propósito.</b> Imagen exportable de alta densidad informativa.</li>
+    <li><b>Variantes.</b> <b>Editorial</b> (claro, serif), <b>Mono</b> (terminal sobre ink, palabras con prefijo <code>::</code>), <b>Póster</b> (gradient wine con numeral gigante de fondo).</li>
+    <li><b>Aspect.</b> 1:1.25 — funciona en LinkedIn, Instagram, WhatsApp y screenshot mobile.</li>
+    <li><b>Acciones.</b> Copiar texto · Compartir (Web Share API → fallback download PNG vía html-to-image).</li>
+  </ul>
+
+  <h3>MobileBottomCTA</h3>
+  <ul>
+    <li><b>Contenido.</b> 1 o 2 botones · gradiente de fade hacia el fondo arriba del bottombar para evitar corte abrupto.</li>
+    <li><b>Comportamiento.</b> Siempre visible · ignora safe-area home indicator (padding inferior 16px).</li>
+  </ul>
+
+  <h3>LoadingAnalysisState</h3>
+  <ul>
+    <li><b>Contenido.</b> Card del texto recibido · pulse rings centrales con sparkle interior · checklist progresivo (Limpiando texto / Identificando ubicación / Detectando edad / Mapeando ingreso / Consultando fuentes).</li>
+    <li><b>Duración.</b> ~2.4s. Cada paso 480ms.</li>
+  </ul>
+
+  <h3>EmptyResultState</h3>
+  <ul>
+    <li><b>Cuándo.</b> Cuando la IA no logró parsear el texto o el universo es exactamente 0.</li>
+    <li><b>Contenido.</b> Quote serif: <i>"No pude convertir tu texto en criterios concretos."</i> · botón <i>Reescribir</i> + chips de ejemplo.</li>
+    <li><b>Nunca decir.</b> "No existe", "Imposible".</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="ld" class="s">
+  <div class="num">03 · Desktop</div>
+  <h2>Layout <i>Desktop</i></h2>
+  <p class="intro">Grid de 12 columnas, 1280–1440px de ancho típico. Centrado en 980px máximo de contenido para mantener feel editorial.</p>
+
+  <h3>A · Landing</h3>
+  <div class="layout">┌───────────────────────── header (fixed, 72px) ───────────────────────────┐
+│  ● LoveOdds MX                                          [empezar] [share]│
+├─────────────────────────────── hero (60vh) ────────────────────────────┤
+│                                                                          │
+│  • ANÁLISIS DEMOGRÁFICO · MX                                             │
+│                                                                          │
+│   ¿Qué tan raro            │   ┌──────────────────────┐                   │
+│   es lo que                │   │ Resultado · demo     │  ← mock card     │
+│   buscas?                  │   │ 0.8%                 │     pre-rendered │
+│                            │   │ aguja en un pajar    │                   │
+│   Convierte tus            │   │ ▰▰▰▰▰▰▰▱▱           │                   │
+│   preferencias en…         │   │ "Tu búsqueda no…"    │                   │
+│                            │   └──────────────────────┘                   │
+│   [Calcular mi prob ▸]  [Ver ejemplo]                                     │
+│                                                                          │
+├─────────────────────── 3 cómo funciona (cols) ─────────────────────────┤
+│  01 Lenguaje natural    02 Datos públicos    03 Sin juicios              │
+├──────────────────────── ethics disclaimer ──────────────────────────────┤
+│  🔒 LoveOdds no mide el valor de una persona…                             │
+└─────────────────────────── footer (fuentes) ───────────────────────────┘</div>
+  <p><b>Jerarquía.</b> Headline gigante a la izquierda, mock card a la derecha (proporción 60/40). El usuario debe entender en menos de 5s qué hace la app.</p>
+
+  <h3>B · Input AI</h3>
+  <div class="layout">┌── header ────────────────────────────────────────────────────────────┐
+│  ●  LoveOdds MX                                            01 · BÚSQUEDA │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   Cuéntale al  analista  qué buscas.                                     │
+│   Escríbelo en lenguaje natural…                                         │
+│                                                                          │
+│   ┌────────────────────────────────────────────────────────────┐         │
+│   │ ● ANALISTA LOVEODDS                                         │         │
+│   │                                                             │         │
+│   │  Busco un hombre en CDMX, 32 años, soltero…                │         │
+│   │                                                             │         │
+│   │                                              [interpretar ✦]│         │
+│   └────────────────────────────────────────────────────────────┘         │
+│                                                                          │
+│   EJEMPLOS RÁPIDOS                                                       │
+│   [01 Hombre 32]  [02 Mujer colombiana 28]  [03 Profesionista 30-35]    │
+│                                                                          │
+│   EL ANALISTA DETECTA                                                    │
+│   [📍 Ubicación] [👤 Edad y género] [♥ Estado conyugal] …               │
+└──────────────────────────────────────────────────────────────────────────┘</div>
+  <p><b>Jerarquía.</b> El textarea es el héroe absoluto. Las capabilities y ejemplos viven abajo, sin competir.</p>
+
+  <h3>C · Criterios detectados</h3>
+  <div class="layout">┌── header · 02 · CRITERIOS ──────────────────────────────────────────────┐
+│   Esto fue lo que  entendí.                                              │
+│   Toca cualquier criterio para ajustarlo antes de calcular.              │
+│                                                                          │
+│   ┌──────────────────────┐ ┌──────────────────────┐                      │
+│   │ 👤 BUSCO    Hombre  ✎│ │ 📍 UBICACIÓN  CDMX  ✎│   ← grid 2 cols      │
+│   ├──────────────────────┤ ├──────────────────────┤                      │
+│   │ 👤 EDAD     30–35   ✎│ │ ♥ ESTADO    Soltero ✎│                      │
+│   ├──────────────────────┤ ├──────────────────────┤                      │
+│   │ 👤 HIJOS    Sin     ✎│ │ 📏 ESTATURA   1.80m ✎│                      │
+│   ├──────────────────────┤ ├──────────────────────┤                      │
+│   │ 💼 INGRESO  $80k+/m ✎│ │ 🌐 ORIGEN   Sin fil ✎│                      │
+│   ├──────────────────────┤ ├──────────────────────┤                      │
+│   │ ✎ ESCOLAR.  Lic+   ✎│ │                      │                      │
+│   └──────────────────────┘ └──────────────────────┘                      │
+│                                                                          │
+│   ℹ La IA tiende a ser literal. Si tu búsqueda incluye matices…         │
+│                                          [Calcular rareza ▸]             │
+└──────────────────────────────────────────────────────────────────────────┘</div>
+  <p>Desktop usa 2 columnas para los criterios (mobile usa 1). Botón <i>Calcular</i> sticky abajo-derecha.</p>
+
+  <h3>D · Resultado principal</h3>
+  <div class="layout">┌── header · sticky tab nav · RESUMEN · FUNNEL · ANÁLISIS · ESCEN · FUENTES ┐
+│   ┌─────────────────────────────────────────────────┐ ┌────────────────┐│
+│   │  PROBABILIDAD ESTIMADA            ● alta conf.  │ │ TU BÚSQUEDA    ││
+│   │                                                 │ │ • Hombre       ││
+│   │  0.0017%                                        │ │ • CDMX         ││
+│   │  2 de cada 100,000  ·  59 personas est.         │ │ • 30–35        ││
+│   │                                                 │ │ • soltero      ││
+│   │  NIVEL DE RAREZA       Unicornio demográfico    │ │ • sin hijos    ││
+│   │  ▰▰▰▰▰▰                                          │ │ • $80k+        ││
+│   │                                                 │ │ • 1.80m+       ││
+│   │  "Estadísticamente, esta combinación apenas…"   │ │ • Licenciatura+││
+│   │                                                 │ │                ││
+│   │  FILTRO MÁS RESTRICTIVO              −96%       │ │ [Reiniciar]    ││
+│   │  Ingreso ≥ $80,000 / mes                        │ │ [Compartir]    ││
+│   └─────────────────────────────────────────────────┘ └────────────────┘│
+│                                                                          │
+│   ─────────── REDUCCIÓN DEL UNIVERSO ───────────                         │
+│   Funnel + Reality Check + What-if (en columnas o secciones)             │
+└──────────────────────────────────────────────────────────────────────────┘</div>
+  <p><b>Jerarquía.</b> Probability card 70%, sidebar de búsqueda 30%. Bajo eso, secciones full-width separadas por reglas.</p>
+
+  <h3>E · Funnel</h3>
+  <p>Desktop muestra 2 vistas: <b>vertical waterfall</b> (igual que mobile, dominante) + <b>side panel</b> opcional con detalle de fuente y delta. No usar la forma trapezoidal de funnel clásico — es ilegible en data densa.</p>
+
+  <h3>F · Reality Check</h3>
+  <p>Card de ancho 720px centrada. Avatar a la izquierda, contenido a la derecha. Quote serif 28px ocupa 60% del card.</p>
+
+  <h3>G · What-if Optimizer</h3>
+  <p>Grid 3 columnas en desktop, 1 en mobile. Cada card ~280px ancho. Ordenadas por impacto descendente.</p>
+
+  <h3>H · Fuentes y confianza</h3>
+  <p>Lista vertical. Cada source card ancho 100% con N estimada de filas <code>SourceConfidenceCard</code>. Nota metodológica como callout final.</p>
+
+  <h3>I · Ética y privacidad</h3>
+  <p>Sección sobria, ancho 720px centrado. Icono lock + 2 párrafos. Sin botón — sólo lectura.</p>
+
+  <h3>J · Share card</h3>
+  <p>Modal centrado 480px. Tabs <i>Editorial / Mono / Póster</i> arriba. Preview de la card grande abajo. Acciones <i>Copiar texto</i> + <i>Descargar PNG</i> + <i>Compartir</i>.</p>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="lm" class="s">
+  <div class="num">04 · Mobile</div>
+  <h2>Layout <i>Mobile</i></h2>
+  <p class="intro">Mobile-first. iPhone 15 Pro como base de diseño (402×874). Todas las pantallas tienen <b>scroll vertical</b>, header con eyebrow centrado, bottom CTA fijo, dots de progreso fuera del frame.</p>
+
+  <h3>Flujo principal</h3>
+  <ol>
+    <li><b>Hero</b> · headline + mock dashboard + CTAs → tap <i>Calcular</i></li>
+    <li><b>Input</b> · textarea grande, chips de ejemplo, botón Interpretar</li>
+    <li><b>Interpretando</b> · pulse ring + checklist (~2.4s)</li>
+    <li><b>Criterios</b> · lista vertical editable, info note, CTA <i>Calcular rareza</i></li>
+    <li><b>Calculando</b> · contador 0–100% + checklist de fuentes (~2s)</li>
+    <li><b>Resultado</b> · tab nav sticky → Resumen → Funnel → Análisis → Escenarios → Fuentes</li>
+    <li><b>Compartir</b> · 3 variantes + acciones</li>
+  </ol>
+
+  <h3>Cada pantalla, en orden vertical</h3>
+
+  <h4>1 · Landing (mobile)</h4>
+  <div class="layout">┌──────────────── status bar ────────────────┐
+│ ● LoveOdds MX                          ⋯  │
+├────────────────────────────────────────────┤
+│ • ANÁLISIS DEMOGRÁFICO · MX                │
+│                                            │
+│ ¿Qué tan raro                               │
+│ es lo que                                   │
+│ buscas?  (display 56px)                     │
+│                                            │
+│ Convierte tus preferencias en…              │
+│                                            │
+│ ┌────────── mock card ──────────┐          │
+│ │ Resultado · demo   ●conf 92%  │          │
+│ │ 0.8%   aguja en un pajar       │          │
+│ │ ▰▰▰▰▰▰▰▱▱  4 mini bars         │          │
+│ │ "Tu búsqueda no es imposible…" │          │
+│ └────────────────────────────────┘          │
+│                                            │
+│ [Calcular mi probabilidad ▸]                │
+│ [Ver un ejemplo]                            │
+│                                            │
+│ ── Cómo funciona ──                         │
+│ 01 Lenguaje natural · 02 Datos · 03 Sin juicios │
+│                                            │
+│ ── 🔒 disclaimer ético ──                   │
+└────────────────────────────────────────────┘</div>
+
+  <h4>2 · Input</h4>
+  <p>Textarea ocupa ~40% de la pantalla. Botón Interpretar dentro del card del input. Chips de ejemplo debajo. Capability grid 2 columnas al final. <i>No</i> uses teclado fijo en este mock (causa fatiga visual).</p>
+
+  <h4>3 · Criterios detectados</h4>
+  <p>Lista vertical en 1 columna (en mobile siempre 1 col). Cada criterio = 56px alto con icon + label + valor + lápiz. Tap expande inline con 3 chips de opciones rápidas. CTA <i>Calcular rareza</i> fijo abajo.</p>
+
+  <h4>4 · Resultado</h4>
+  <p>Tab nav sticky bajo el header. <b>Long scroll</b> con secciones separadas por reglas tipo poster (línea + label mono). Cada sección tiene su propio scroll-anchor.</p>
+  <ul>
+    <li><b>Resumen</b> · probability card + tier scale + filter impact + chip recap.</li>
+    <li><b>Funnel</b> · vertical waterfall, una barra por filtro.</li>
+    <li><b>Análisis</b> · Reality Check card con KV list.</li>
+    <li><b>Escenarios</b> · cards apiladas, ordenadas por impacto.</li>
+    <li><b>Fuentes</b> · lista de source cards + nota metodológica.</li>
+  </ul>
+  <p>CTA fijo abajo: <i>Reiniciar</i> + <i>Compartir resultado</i> (proporción 1:1.6).</p>
+
+  <h4>5 · Compartir</h4>
+  <p>3 chips solid/outline para elegir variante. Preview de la card a tamaño real (~aspect 1:1.25). Acciones <i>Copiar texto</i> + <i>Compartir</i>. Snippet de texto sugerido al pie.</p>
+
+  <h3>Reglas mobile</h3>
+  <ul>
+    <li>Nunca dashboards con +3 columnas de cifras.</li>
+    <li>Tap targets ≥ 44px.</li>
+    <li>Headlines a 1.0 line-height para ahorrar vertical.</li>
+    <li>Body 15px. Captions 12px. Nunca menor.</li>
+    <li>Padding lateral 20px. Cards con radius 22px.</li>
+    <li>Bottombar siempre visible cuando hay próxima acción obvia.</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="ex1" class="s">
+  <div class="num">05 · Result example A</div>
+  <h2>Ejemplo <i>1</i> — Hombre · 32 · 1.80 m · $100k</h2>
+  <p class="intro">Búsqueda: <i>"Busco un hombre en CDMX, 32 años, soltero, sin hijos, que mida 1.80 m y gane 100,000 MXN mensuales."</i> Datos demo basados en magnitudes INEGI · ENIGH · ENSANUT.</p>
+
+  <div class="res">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span class="eyebrow">Probabilidad estimada</span>
+      <span class="badge warn"><span class="dot"></span>media · demo</span>
+    </div>
+    <div class="pct">0.0012<sup>%</sup></div>
+    <div style="margin-top:6px;font-family:var(--font-mono);font-size:13.5px;color:var(--ink);font-weight:600">1 de cada 80,000<span style="color:var(--ink-3);font-weight:400"> · 42 personas estimadas</span></div>
+
+    <div style="margin:18px 0 8px;display:flex;justify-content:space-between;align-items:baseline">
+      <span class="eyebrow">Nivel de rareza</span>
+      <span style="font-family:var(--font-display);font-size:17px;font-style:italic;color:var(--ink)">Unicornio demográfico</span>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center">
+      <div style="flex:1;height:6px;background:var(--bg-deep);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:16px;background:var(--accent);border-radius:3px"></div>
+    </div>
+
+    <p class="quote">Estadísticamente, esta combinación apenas existe en los datos demográficos disponibles. No es imposible — es minúscula.</p>
+
+    <div style="background:var(--bg-deep);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px">Filtro más restrictivo</div>
+        <div style="font-size:14px;font-weight:500;color:var(--ink)">Combinación: ingreso ≥ $100k + estatura ≥ 1.80m</div>
+      </div>
+      <div style="font-family:var(--font-mono);font-weight:600;color:var(--accent)">−99.8%</div>
+    </div>
+  </div>
+
+  <h3>Funnel · reducción del universo</h3>
+  <div class="funnel card">
+    <div class="row"><div class="l"><b>00 · Población base</b><small>Adultos hombres CDMX · INEGI 2020</small></div><div class="n">3,420,000</div></div>
+    <div class="bar"><div style="width:100%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">01 · Edad 31–33<small>INEGI · pirámide poblacional · ×0.064</small></div><div class="n">218,000</div></div>
+    <div class="bar"><div style="width:6.4%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">02 · Nunca casado<small>INEGI · estado conyugal · ×0.36</small></div><div class="n">78,480</div></div>
+    <div class="bar"><div style="width:2.3%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">03 · Sin hijos registrados<small>ENADID 2023 · ×0.42</small></div><div class="n">32,962</div></div>
+    <div class="bar"><div style="width:.96%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">04 · Ingreso ≥ $100,000 / mes<small>ENIGH 2024 · ×0.022</small></div><div class="n">725</div></div>
+    <div class="bar"><div style="width:.021%;min-width:2px"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">05 · Estatura ≥ 1.80 m<small>ENSANUT 2022 · ×0.058</small></div><div class="n">42</div></div>
+    <div class="bar term"><div style="width:.0012%;min-width:3px"></div></div>
+
+    <div class="row" style="margin-top:8px"><div class="l" style="color:var(--accent);font-weight:700">Universo resultante</div><div class="n" style="color:var(--accent)">≈ 42</div></div>
+  </div>
+
+  <h3>Reality Check</h3>
+  <div class="card">
+    <div style="font-family:var(--font-display);font-size:20px;line-height:1.3;color:var(--ink);margin-bottom:10px">Tu búsqueda no es imposible — es altamente específica. La combinación de ingreso top y estatura top es lo que vuelve el universo prácticamente nulo.</div>
+    <p>Por separado, ingreso ≥ $100k MXN aparece en ~2.2% de los hombres ocupados de CDMX. Estatura ≥ 1.80 m aparece en ~5.8% de los hombres mexicanos. Cumplir ambos al mismo tiempo (asumiendo independencia) recorta el universo en más de 99%.</p>
+    <table style="margin-top:14px">
+      <tr><td class="mono">SIGNIFICADO</td><td><b>1 de cada 80,000 adultos</b></td></tr>
+      <tr><td class="mono">FILTRO MÁS RESTRICTIVO</td><td><b>Ingreso × estatura</b></td></tr>
+      <tr><td class="mono">TIER</td><td><b>Unicornio demográfico</b></td></tr>
+      <tr><td class="mono">CONFIANZA</td><td><b>Media · demo MVP</b></td></tr>
+      <tr><td class="mono">MAYOR INCERTIDUMBRE</td><td><b>Correlación ingreso × estatura (asumimos independencia)</b></td></tr>
+    </table>
+    <div class="card-flat" style="margin-top:14px">
+      <b>Lo que no se puede concluir:</b> que esa persona no exista, que estés equivocado/a al buscarla, o cuál es tu propia probabilidad como pareja potencial.
+    </div>
+  </div>
+
+  <h3>Escenarios alternativos</h3>
+  <div class="grid-3">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Bajar ingreso a $70,000</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">El ingreso es típicamente el filtro que más mueve la aguja en CDMX.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×4.1</div>
+        <span class="badge neg"><span class="dot"></span>alto</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Bajar estatura a 1.75 m</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Cinco centímetros mueven mucho la curva normal.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×3.2</div>
+        <span class="badge warn"><span class="dot"></span>medio</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Buscar en ZMVM</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Incluye Edomex y municipios conurbados.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×2.6</div>
+        <span class="badge neg"><span class="dot"></span>alto</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Aceptar 30–35 años</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">El rango ±3 años suele duplicar la cohorte.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×2.1</div>
+        <span class="badge warn"><span class="dot"></span>medio</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Aceptar divorciados</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Suma cohortes 30+ con experiencia previa.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×1.5</div>
+        <span class="badge"><span class="dot"></span>bajo</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Nivel de confianza</h3>
+  <p><span class="badge warn"><span class="dot"></span>media · demo</span> En MVP, las distribuciones son simuladas a partir de tabulados públicos. La mayor incertidumbre viene de asumir <b>independencia entre filtros</b> (ingreso y estatura probablemente están correlacionados con educación y edad).</p>
+
+  <h3>Nota metodológica</h3>
+  <p>Población base: hombres adultos residentes en CDMX, INEGI Censo 2020 (3.42M). Edad ±1 año aplica banda de 3 años sobre pirámide poblacional. Soltería: estado conyugal "nunca casado". Sin hijos: ENADID 2023, hombres declarando 0 descendientes. Ingreso: ENIGH 2024, ingreso ocupado mensual. Estatura: ENSANUT 2022, distribución normal (μ=169 cm, σ=7).</p>
+
+  <h3>Share card · texto</h3>
+  <pre><code>Mi estándar romántico en CDMX: 0.0012%
+1 de cada 80,000 personas cumplen mis criterios.
+Nivel: Unicornio demográfico.
+vía LoveOdds MX</code></pre>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="ex2" class="s">
+  <div class="num">06 · Result example B</div>
+  <h2>Ejemplo <i>2</i> — Mujer colombiana · 28 · CDMX</h2>
+  <p class="intro">Búsqueda: <i>"Busco una mujer colombiana de 28 años en CDMX, soltera y sin hijos."</i> Aquí el filtro decisivo es nacionalidad — caso especial donde el universo se rompe contra una sub-población muy chica.</p>
+
+  <div class="res">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span class="eyebrow">Probabilidad estimada</span>
+      <span class="badge neg"><span class="dot"></span>baja · demo</span>
+    </div>
+    <div class="pct">0.0041<sup>%</sup></div>
+    <div style="margin-top:6px;font-family:var(--font-mono);font-size:13.5px;color:var(--ink);font-weight:600">4 de cada 100,000<span style="color:var(--ink-3);font-weight:400"> · 163 personas estimadas</span></div>
+
+    <div style="margin:18px 0 8px;display:flex;justify-content:space-between;align-items:baseline">
+      <span class="eyebrow">Nivel de rareza</span>
+      <span style="font-family:var(--font-display);font-size:17px;font-style:italic;color:var(--ink)">Aguja en un pajar</span>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center">
+      <div style="flex:1;height:6px;background:var(--bg-deep);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--ink);border-radius:3px"></div>
+      <div style="flex:1;height:16px;background:var(--accent);border-radius:3px"></div>
+      <div style="flex:1;height:6px;background:var(--bg-deep);border-radius:3px"></div>
+    </div>
+
+    <p class="quote">Este perfil existe — el reto es que el universo disponible es pequeño porque el filtro de nacionalidad colombiana en CDMX recorta a un grupo muy específico.</p>
+
+    <div style="background:var(--bg-deep);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="eyebrow" style="margin-bottom:2px">Filtro más restrictivo</div>
+        <div style="font-size:14px;font-weight:500;color:var(--ink)">Origen: Colombia (residente en CDMX)</div>
+      </div>
+      <div style="font-family:var(--font-mono);font-weight:600;color:var(--accent)">−99.6%</div>
+    </div>
+  </div>
+
+  <h3>Funnel · reducción del universo</h3>
+  <div class="funnel card">
+    <div class="row"><div class="l"><b>00 · Población base</b><small>Adultas mujeres CDMX · INEGI 2020</small></div><div class="n">3,980,000</div></div>
+    <div class="bar"><div style="width:100%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">01 · Edad 27–29<small>INEGI · pirámide poblacional · ×0.064</small></div><div class="n">254,720</div></div>
+    <div class="bar"><div style="width:6.4%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">02 · Nunca casada<small>INEGI · estado conyugal · ×0.36</small></div><div class="n">91,700</div></div>
+    <div class="bar"><div style="width:2.3%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">03 · Sin hijas/os registrados<small>ENADID 2023 · ×0.42</small></div><div class="n">38,514</div></div>
+    <div class="bar"><div style="width:.97%"></div></div>
+
+    <div class="row" style="margin-top:6px"><div class="l">04 · Origen: Colombia<small>SEGOB UPM · CONAPO 2024 · ×0.0042</small></div><div class="n">163</div></div>
+    <div class="bar term"><div style="width:.0041%;min-width:3px"></div></div>
+
+    <div class="row" style="margin-top:8px"><div class="l" style="color:var(--accent);font-weight:700">Universo resultante</div><div class="n" style="color:var(--accent)">≈ 163</div></div>
+  </div>
+
+  <h3>Reality Check</h3>
+  <div class="card">
+    <div style="font-family:var(--font-display);font-size:20px;line-height:1.3;color:var(--ink);margin-bottom:10px">Tu búsqueda es altamente específica porque combina edad joven con un filtro de nacionalidad muy restrictivo. El universo existe — sólo es pequeño.</div>
+    <p>Hay aproximadamente 28,000 colombianos/as residiendo en CDMX (SEGOB UPM 2024). De esa población, las mujeres adultas en tu cohorte de edad sin hijos y solteras se estiman en ~160. Es un perfil real, no inventado.</p>
+    <table style="margin-top:14px">
+      <tr><td class="mono">SIGNIFICADO</td><td><b>4 de cada 100,000 adultas</b></td></tr>
+      <tr><td class="mono">FILTRO MÁS RESTRICTIVO</td><td><b>Nacionalidad colombiana</b></td></tr>
+      <tr><td class="mono">TIER</td><td><b>Aguja en un pajar</b></td></tr>
+      <tr><td class="mono">CONFIANZA</td><td><b>Baja · demo MVP</b></td></tr>
+      <tr><td class="mono">MAYOR INCERTIDUMBRE</td><td><b>Residencia efectiva vs. registro consular</b></td></tr>
+    </table>
+    <div class="card-flat" style="margin-top:14px">
+      <b>Lo que no se puede concluir:</b> que sea más difícil conocer a alguien colombiano en CDMX que en otras ciudades, o que la nacionalidad sea un buen proxy de compatibilidad.
+    </div>
+  </div>
+
+  <h3>Escenarios alternativos</h3>
+  <div class="grid-3">
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Quitar nacionalidad específica</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Mantén el resto del perfil; abre el origen.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×237</div>
+        <span class="badge neg"><span class="dot"></span>alto</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Ampliar a Latinoamérica</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Argentinas, venezolanas, peruanas, chilenas residentes.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×8.5</div>
+        <span class="badge neg"><span class="dot"></span>alto</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:4px">Edad 25–32</div>
+      <p style="font-size:12.5px;color:var(--ink-3);margin:0 0 10px">Banda de 7 años en lugar de exacta.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">×3.4</div>
+        <span class="badge warn"><span class="dot"></span>medio</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Nivel de confianza</h3>
+  <p><span class="badge neg"><span class="dot"></span>baja · demo</span> Los datos de residentes extranjeros en CDMX provienen de SEGOB / Unidad de Política Migratoria y CONAPO. Estos registros suelen <b>subestimar</b> la población real (muchos residen sin formalizar trámite). El número 163 es un piso conservador.</p>
+
+  <h3>Nota metodológica</h3>
+  <p>Población colombiana en CDMX: estimación ~28,000 (SEGOB/UPM 2024). Distribución por edad y sexo se asume proporcional al patrón de migración latinoamericana joven (peso hacia 22–35). Soltería y "sin hijos" se aplican con tasas de la población latinoamericana adulta urbana, no de la población mexicana.</p>
+
+  <h3>Share card · texto</h3>
+  <pre><code>Mi búsqueda en CDMX: 0.0041%
+4 de cada 100,000 personas cumplen estos criterios.
+Nivel: Aguja en un pajar.
+Filtro decisivo: origen colombiano.
+vía LoveOdds MX</code></pre>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="tone" class="s">
+  <div class="num">07 · Voice</div>
+  <h2>Reglas de <i>tono</i></h2>
+  <p class="intro">La app habla como un analista cordial, no como un comediante ni como un profesor. Inteligente, respetuosa, ligera pero nunca burlona, estadística pero humana.</p>
+
+  <h3>10 frases recomendadas</h3>
+  <ol>
+    <li>"Tu búsqueda es específica, pero no imposible."</li>
+    <li>"Este perfil existe; el reto es que el universo disponible es pequeño."</li>
+    <li>"Tu estándar no es malo, sólo es estadísticamente exigente."</li>
+    <li>"El filtro que más reduce tu universo es el ingreso mensual."</li>
+    <li>"Si amplías el rango de edad, el universo potencial crece significativamente."</li>
+    <li>"Esta combinación apenas aparece en los datos demográficos disponibles."</li>
+    <li>"El resultado no significa que no exista alguien así; significa que el grupo analizado es pequeño."</li>
+    <li>"Tu estándar describe un grupo amplio dentro de la población."</li>
+    <li>"Estás buscando dentro de un subgrupo poco común."</li>
+    <li>"Estos números no opinan sobre las personas — describen la distribución."</li>
+  </ol>
+
+  <h3>10 frases prohibidas</h3>
+  <ol>
+    <li>"Tus estándares son ridículos."</li>
+    <li>"Nadie así te va a hacer caso."</li>
+    <li>"Baja tus estándares."</li>
+    <li>"Eso nunca va a pasar."</li>
+    <li>"Nadie cumple eso."</li>
+    <li>"No te alcanza."</li>
+    <li>"Pides demasiado."</li>
+    <li>"Resígnate."</li>
+    <li>"Es imposible."</li>
+    <li>"Te quedaste sola/o."</li>
+  </ol>
+
+  <div class="grid-2">
+    <div class="do">Tu búsqueda es altamente específica. La combinación de filtros la vuelve estadísticamente poco común dentro del universo analizado.</div>
+    <div class="dont">Buscas algo absurdo. Mejor cambia de criterios o sigue soltero/a.</div>
+  </div>
+
+  <h3>Cuándo el resultado es muy bajo (≤ 0.1%)</h3>
+  <p>Reconoce la rareza sin culpar al usuario. Llama al filtro que más pesa por su nombre. Ofrece simulaciones, no juicios.</p>
+  <div class="do" style="margin-top:8px">"Estadísticamente, este perfil casi no aparece en los datos. El filtro que más pesa es <b>X</b>. Si te interesa ver qué pasa al ajustarlo, los escenarios de abajo lo simulan."</div>
+
+  <h3>Cuándo el resultado es alto (≥ 5%)</h3>
+  <p>Sin condescendencia. Sin "qué bueno". Sólo describe.</p>
+  <div class="do" style="margin-top:8px">"Tu estándar describe un grupo amplio dentro de la población analizada. La probabilidad estimada es <b>X%</b>: hay millones de adultos que cumplen estos criterios."</div>
+
+  <h3>Cómo explicar incertidumbre</h3>
+  <ul>
+    <li>Siempre nombra la fuente principal.</li>
+    <li>Si un dato es demo, dilo: <i>"datos simulados a partir de tabulados"</i>.</li>
+    <li>Si un filtro asume independencia, dilo: <i>"asumimos que ingreso y estatura son independientes; en la realidad están correlacionados con educación y edad"</i>.</li>
+    <li>Diferencia claramente <b>no se observa</b> de <b>no existe</b>.</li>
+  </ul>
+
+  <h3>Cómo evitar sesgos</h3>
+  <ul>
+    <li>Nunca jerarquizar nacionalidades, razas, religiones.</li>
+    <li>"Origen" o "país de nacimiento", nunca "nacionalidad preferida".</li>
+    <li>Las preferencias por estatura, ingreso o estado civil se nombran como criterios, no como ideales.</li>
+    <li>No combinar resultado con publicidad de servicios románticos.</li>
+    <li>No pedir datos personales del usuario más allá del texto de búsqueda.</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="rar" class="s">
+  <div class="num">08 · Rarity tiers</div>
+  <h2>Estados de <i>rareza</i></h2>
+  <p class="intro">Seis niveles, asignados por porcentaje del universo base que el resultado representa. El nombre debe ser memorable y compartible.</p>
+
+  <div class="card">
+    <div class="rar-row"><div class="swatch" style="background:#5F8F6E"></div><div class="name">Común</div><div class="range">≥ 8%</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#5F8F6E"></div><div class="desc">Tu búsqueda describe un grupo amplio de la población. Hay millones que cumplen.</div><div class="range">"En todas partes"</div></div>
+
+    <div class="rar-row"><div class="swatch" style="background:#4A6FA5"></div><div class="name">Selectivo</div><div class="range">2 – 8 %</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#4A6FA5"></div><div class="desc">Tu estándar es claro, pero deja un universo razonable.</div><div class="range">"Acotado"</div></div>
+
+    <div class="rar-row"><div class="swatch" style="background:#6B5B9E"></div><div class="name">Muy selectivo</div><div class="range">0.5 – 2 %</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#6B5B9E"></div><div class="desc">Empiezas a buscar dentro de un subgrupo pequeño.</div><div class="range">"Específico"</div></div>
+
+    <div class="rar-row"><div class="swatch" style="background:#9A4A7A"></div><div class="name">Estadísticamente raro</div><div class="range">0.1 – 0.5 %</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#9A4A7A"></div><div class="desc">No es imposible, pero ya es un perfil poco común.</div><div class="range">"Inusual"</div></div>
+
+    <div class="rar-row"><div class="swatch" style="background:#7A1F3D"></div><div class="name">Aguja en un pajar</div><div class="range">0.01 – 0.1 %</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#7A1F3D"></div><div class="desc">El universo disponible es minúsculo. Cientos, no miles.</div><div class="range">"Casi único"</div></div>
+
+    <div class="rar-row"><div class="swatch" style="background:#3D0F1F"></div><div class="name">Unicornio demográfico</div><div class="range">&lt; 0.01 %</div></div>
+    <div class="rar-row"><div class="swatch" style="background:#3D0F1F"></div><div class="desc">Estadísticamente, esta combinación apenas existe en los datos.</div><div class="range">"Mítico"</div></div>
+  </div>
+
+  <h4>Visualización</h4>
+  <ul>
+    <li>Barra de 6 segmentos. El tier activo es 2.5× más alto que los demás y usa el color de su nivel; los anteriores se rellenan con <code>ink</code>, los posteriores con <code>bg-deep</code>.</li>
+    <li>El nombre del tier se renderiza en italic Instrument Serif 17–20px.</li>
+    <li>Tap en la barra abre un tooltip con el rango porcentual.</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="conf" class="s">
+  <div class="num">09 · Confidence</div>
+  <h2>Estados de <i>confianza</i></h2>
+  <p class="intro">La confianza estadística se comunica con un pip de color + label mono uppercase. Tiene 4 estados.</p>
+
+  <table>
+    <tr><th>Estado</th><th>Cuándo</th><th>Cómo se muestra</th><th>Copy</th></tr>
+    <tr><td><span class="badge pos"><span class="dot"></span>alta</span></td><td>Filtros provienen del Censo o ENOE, n &gt; 10k</td><td>Pip verde <code>--pos</code>, sin badge extra</td><td>"Alta confianza · INEGI"</td></tr>
+    <tr><td><span class="badge warn"><span class="dot"></span>media</span></td><td>Combinación de filtros con uno o más basados en ENIGH/ENSANUT (n &gt; 5k)</td><td>Pip ámbar <code>--warn</code></td><td>"Media · datos muestrales"</td></tr>
+    <tr><td><span class="badge neg"><span class="dot"></span>baja</span></td><td>Filtros con &lt; 1k registros o nacionalidad extranjera</td><td>Pip wine <code>--neg</code> + caption "subestima posible"</td><td>"Baja · sub-población pequeña"</td></tr>
+    <tr><td><span class="badge"><span class="dot"></span>demo</span></td><td>MVP sin conexión a microdatos</td><td>Pip gris + label "demo data"</td><td>"Datos demo · MVP"</td></tr>
+  </table>
+
+  <h4>Limitación que debe comunicarse</h4>
+  <ul>
+    <li>"Asumimos independencia entre filtros" cuando combinamos &gt; 3.</li>
+    <li>"Subestima posible" cuando trabajamos con población extranjera o sub-grupo.</li>
+    <li>"Distribución simulada" cuando aplicamos un modelo paramétrico (estatura, ingreso).</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="anim" class="s">
+  <div class="num">10 · Motion</div>
+  <h2>Animaciones e <i>interacciones</i></h2>
+  <p class="intro">Animaciones sutiles, nunca decorativas. Easing default <code>cubic-bezier(.2,.7,.2,1)</code>. Duración default 280ms para UI, 1.1s para data viz.</p>
+
+  <table>
+    <tr><th>Momento</th><th>Animación</th><th>Duración</th><th>Notas</th></tr>
+    <tr><td><b>Interpretando búsqueda</b></td><td>Pulse ring expandido desde el centro (3 anillos staggered)</td><td class="num">2.4s</td><td>Checklist se va llenando con checks verdes uno por paso</td></tr>
+    <tr><td><b>Generando criterios</b></td><td>Cada chip aparece con fade-up de 6px, stagger 80ms</td><td class="num">320ms / chip</td><td>Después de los 9 chips, helper text aparece</td></tr>
+    <tr><td><b>Calculando funnel</b></td><td>Contador 0–100% + checklist de fuentes</td><td class="num">~2s</td><td>El contador acelera al final con jitter ligero</td></tr>
+    <tr><td><b>Revelando porcentaje</b></td><td>BigPercent count-up desde 0 hasta valor final</td><td class="num">1.2s</td><td>Easing out-cubic. La unidad "%" aparece sólo al final</td></tr>
+    <tr><td><b>Funnel</b></td><td>Cada barra crece de ancho 0 a su % final, stagger 60ms</td><td class="num">1.1s</td><td>El paso terminal usa color accent y altura 8px (vs 6px)</td></tr>
+    <tr><td><b>Reality Check</b></td><td>Fade-up del card 8px</td><td class="num">350ms</td><td>Luego KV list se va revelando línea por línea, stagger 80ms</td></tr>
+    <tr><td><b>Aplicar what-if</b></td><td>Toda la pantalla de resultado hace cross-fade hacia el nuevo valor</td><td class="num">600ms</td><td>Snackbar "Escenario aplicado · Deshacer" 6s</td></tr>
+    <tr><td><b>Share card</b></td><td>Slide-up del modal + scale del card desde .94 → 1</td><td class="num">320ms</td><td>Al cambiar variante, cross-fade 240ms</td></tr>
+    <tr><td><b>Press states</b></td><td>scale(.985) en botones</td><td class="num">120ms</td><td>Opacidad .9 en chips</td></tr>
+  </table>
+
+  <h4>Reglas</h4>
+  <ul>
+    <li>Nada que se mueva más de 12px en UI estática.</li>
+    <li>Sin parallax. Sin "bouncy" springs. Sin auto-rotación.</li>
+    <li>Prefers-reduced-motion: desactivar todas las animaciones de revelación; mantener cross-fades de 120ms.</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="build" class="s">
+  <div class="num">11 · Build</div>
+  <h2>Handoff para <i>construcción</i></h2>
+  <p class="intro">Instrucciones concretas para implementar en Lovable, Gemini Code o Claude Code. Pensado como MVP funcional sin backend.</p>
+
+  <h3>Estructura de páginas</h3>
+  <pre><code>/                     <span class="com">→ Landing</span>
+/buscar               <span class="com">→ Input AI</span>
+/buscar/interpretando <span class="com">→ Loading state (auto-redirect)</span>
+/criterios            <span class="com">→ Parsed criteria, editable</span>
+/calculando           <span class="com">→ Loading state (auto-redirect)</span>
+/resultado            <span class="com">→ Main result + tab nav</span>
+/compartir            <span class="com">→ Share card variants</span></code></pre>
+  <p>Single-page app aceptable. Cada paso navega con replaceState para preservar back history mínimo.</p>
+
+  <h3>Estructura de componentes</h3>
+  <pre><code>src/
+  app/
+    layout.tsx                <span class="com">→ Theme provider + design tokens</span>
+    page.tsx                   <span class="com">→ Landing</span>
+    buscar/page.tsx            <span class="com">→ Input</span>
+    criterios/page.tsx
+    resultado/page.tsx
+    compartir/page.tsx
+  components/
+    AppHeader.tsx
+    HeroSection.tsx
+    AIQueryInput.tsx
+    ExamplePromptChips.tsx
+    ParsedCriteriaPanel.tsx
+    EditableCriteriaChip.tsx
+    MainProbabilityCard.tsx
+    RarityBadge.tsx
+    ConfidenceBadge.tsx
+    FilterImpactBadge.tsx
+    PopulationFunnel.tsx
+    FunnelStep.tsx
+    RealityCheckCard.tsx
+    WhatIfOptimizer.tsx
+    WhatIfScenarioCard.tsx
+    StatisticalSourcesPanel.tsx
+    SourceConfidenceCard.tsx
+    EthicsDisclaimer.tsx
+    ShareResultCard.tsx
+    MobileBottomCTA.tsx
+    LoadingAnalysisState.tsx
+    EmptyResultState.tsx
+  lib/
+    demographics.ts            <span class="com">→ Mock data + calc</span>
+    parser.ts                  <span class="com">→ NL → criteria parser (mock)</span>
+    types.ts                   <span class="com">→ Criteria, FunnelStep, Tier types</span>
+  styles/
+    tokens.css                 <span class="com">→ CSS variables</span>
+    globals.css</code></pre>
+
+  <h3>Datos mock necesarios</h3>
+  <ul>
+    <li><b>Población base.</b> Diccionario por ubicación (<code>CDMX</code>, <code>ZMVM</code>, <code>Nacional</code>) y género: men/women/all adultos.</li>
+    <li><b>Distribución de edad.</b> Pirámide poblacional simplificada: bins de 5 años con % de cada bin.</li>
+    <li><b>Estado conyugal.</b> Tablas por género × bin de edad: soltero · casado · divorciado · viudo.</li>
+    <li><b>Fecundidad.</b> Tasa de hijos por género × bin de edad.</li>
+    <li><b>Ingreso.</b> Deciles ENIGH con corte por cuantía (función log-linear).</li>
+    <li><b>Estatura.</b> Distribución normal: μ y σ por género.</li>
+    <li><b>Nacionalidad.</b> Población residente por país de origen × ubicación.</li>
+    <li><b>Escolaridad.</b> % licenciatura+ por género × bin de edad.</li>
+    <li><b>Sources.</b> Lista de 6 fuentes con metadatos.</li>
+  </ul>
+
+  <h3>Funciones simuladas necesarias</h3>
+  <pre><code><span class="com">// lib/parser.ts — mock NL parser</span>
+parseQuery(text: string): Promise&lt;Criteria&gt;
+
+<span class="com">// lib/demographics.ts — calc</span>
+computeFunnel(c: Criteria): { steps: FunnelStep[], pct: number, finalN: number, base: number }
+rarityTier(pct: number): { name: string, rank: 1..6, color: string, blurb: string }
+mostRestrictive(steps: FunnelStep[]): { label: string, dropPct: number }
+scenarios(c: Criteria): Scenario[]
+buildInterpretation(calc, tier, most, c): { headline: string, detail: string, points: KV[] }
+
+<span class="com">// MVP: parser puede usar window.claude.complete con un prompt</span>
+<span class="com">// "Extrae criterios demográficos del texto y devuelve JSON con: busca, ubicacion, ...".</span></code></pre>
+
+  <h3>Estados de UI</h3>
+  <table>
+    <tr><th>Pantalla</th><th>Estados</th></tr>
+    <tr><td>Hero</td><td>idle</td></tr>
+    <tr><td>Input</td><td>empty · typing · ready · interpreting · error</td></tr>
+    <tr><td>Criterios</td><td>loaded · editing-chip-N · saving</td></tr>
+    <tr><td>Calculando</td><td>0–100%</td></tr>
+    <tr><td>Resultado</td><td>tab=resumen · tab=funnel · tab=analisis · tab=escenarios · tab=fuentes</td></tr>
+    <tr><td>Compartir</td><td>variant=editorial · variant=mono · variant=poster · copied</td></tr>
+  </table>
+
+  <h3>Flujo de usuario (state machine)</h3>
+  <pre><code>landing → input → interpreting ─▶ criteria → calculating ─▶ result
+                       ↑                ↑                       │
+                       └─ error ─────── │                       │
+                                        └─ apply what-if ───────┘
+                                                                │
+                                                          result → share
+                                                          result → restart → input</code></pre>
+
+  <h3>Qué debe quedar hardcoded en MVP</h3>
+  <ul>
+    <li>Las distribuciones por filtro (mock, anchored en magnitudes INEGI).</li>
+    <li>El parser de lenguaje natural (puede usar Claude Haiku o regex simple).</li>
+    <li>Las 6 fuentes con metadatos y nivel de confianza.</li>
+    <li>El copy de los 6 tiers de rareza.</li>
+  </ul>
+
+  <h3>Qué debe quedar listo para integración</h3>
+  <ul>
+    <li>Interfaz <code>Criteria → FunnelStep[]</code> abstracta — el MVP la implementa con tablas; producción la conecta a microdatos.</li>
+    <li>Endpoint <code>/api/parse</code> y <code>/api/funnel</code> definidos como contratos JSON, aunque el MVP los resuelva en cliente.</li>
+    <li>Adapter por fuente: <code>INEGICensoAdapter</code>, <code>ENIGHAdapter</code>, etc. Mock devuelve <code>status: "demo"</code>; producción devuelve <code>status: "live"</code>.</li>
+    <li>Share card debe ser renderizable a PNG vía html-to-image para Web Share API.</li>
+  </ul>
+
+  <h3>Decisiones técnicas sugeridas</h3>
+  <ul>
+    <li><b>Framework.</b> Next.js 14 / React 18 / TypeScript / Tailwind o CSS tokens (libre).</li>
+    <li><b>State.</b> Zustand o context simple para Criteria global.</li>
+    <li><b>Animaciones.</b> Framer Motion (count-up, fade-up, cross-fade).</li>
+    <li><b>NL parsing.</b> En producción: API server-side con LLM. En MVP: <code>window.claude.complete</code> o regex.</li>
+    <li><b>Render share card.</b> <code>html-to-image</code> client-side.</li>
+    <li><b>Analytics.</b> PostHog o Plausible. Event clave: <i>result_generated</i> con tier + most_restrictive.</li>
+  </ul>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<section id="check" class="s">
+  <div class="num">12 · QA</div>
+  <h2>Checklist <i>final</i></h2>
+  <p class="intro">Doce preguntas a contestar antes de publicar. Cada una debe ser un <b>sí</b> claro.</p>
+
+  <div class="card">
+    <div class="check"><div class="box"></div>¿Se entiende qué hace la app en menos de 10 segundos en el hero?</div>
+    <div class="check"><div class="box"></div>¿El resultado tiene una pieza diseñada explícitamente para screenshot (share card)?</div>
+    <div class="check"><div class="box"></div>¿El tono evita juicios morales sobre el usuario en todos los copys?</div>
+    <div class="check"><div class="box"></div>¿La metodología (fuentes, año, confianza) se comunica sin esconderla en el footer?</div>
+    <div class="check"><div class="box"></div>¿El funnel se lee de un vistazo en mobile sin hacer pinch-zoom?</div>
+    <div class="check"><div class="box"></div>¿La experiencia se siente AI-native (lenguaje natural &gt; formulario)?</div>
+    <div class="check"><div class="box"></div>¿Mobile se siente natural — no es un dashboard de escritorio comprimido?</div>
+    <div class="check"><div class="box"></div>¿La app evita la estética de dating app (corazones, gradientes morados infantiles)?</div>
+    <div class="check"><div class="box"></div>¿La app evita verse como dashboard corporativo aburrido?</div>
+    <div class="check"><div class="box"></div>¿Queda explícito que los datos son <b>demo</b> en MVP?</div>
+    <div class="check"><div class="box"></div>¿El disclaimer ético aparece al menos 2 veces en el flujo?</div>
+    <div class="check"><div class="box"></div>¿Hay al menos un what-if scenario que ofrezca ×3 o más sin atacar al usuario?</div>
+  </div>
+
+  <h3>Self-evaluation de esta propuesta</h3>
+  <table>
+    <tr><th>Dimensión</th><th>Score</th><th>Nota</th></tr>
+    <tr><td>Diseño premium</td><td class="num"><b>9 / 10</b></td><td>Tipografía editorial + neutrales cálidos + tokens consistentes</td></tr>
+    <tr><td>Claridad de UX</td><td class="num"><b>9 / 10</b></td><td>Flujo lineal de 7 pasos, dots de progreso visibles</td></tr>
+    <tr><td>Potencial viral</td><td class="num"><b>8 / 10</b></td><td>3 variantes de share card, tier names memorables</td></tr>
+    <tr><td>Confianza estadística</td><td class="num"><b>8 / 10</b></td><td>Fuentes citadas, status demo/ready/live, confianza por filtro</td></tr>
+    <tr><td>Responsabilidad ética</td><td class="num"><b>9 / 10</b></td><td>Disclaimer en 3 puntos, copy revisado, "lo que no se puede concluir"</td></tr>
+    <tr><td>AI-native experience</td><td class="num"><b>9 / 10</b></td><td>Analista como personaje, parsing visible, interpretación en lenguaje natural</td></tr>
+  </table>
+</section>
+
+
+<footer>
+  <div class="word"><span class="glyph"></span><span>Love<em>Odds</em></span><span class="mx">MX</span></div>
+  <p style="margin-top:8px">Design handoff · v1.0 · Spec lista para construcción.</p>
+</footer>
+
+  </main>
+</div>
+
+</body>
+</html>
