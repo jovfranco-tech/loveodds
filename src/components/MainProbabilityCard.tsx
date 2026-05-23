@@ -36,8 +36,20 @@ export const MainProbabilityCard: React.FC<MainProbabilityCardProps> = ({ result
                               : numLen > 5 ? 'translate-y-[-12px]'
                               : 'translate-y-[-18px]';
 
+  const isExtremelyRare = tier.rank >= 5;
+
   return (
-    <div className="lo-card relative overflow-hidden p-6 rounded-xl bg-elev-light dark:bg-elev-dark border border-ink/10 dark:border-ink-dark/10 shadow-shd-2 select-none lo-fade-in">
+    <div className={`lo-card relative overflow-hidden p-6 rounded-xl bg-elev-light dark:bg-elev-dark border shadow-shd-2 select-none lo-fade-in ${
+      isExtremelyRare 
+        ? 'border-accent/25 dark:border-accent-2/25 ring-1 ring-accent/15 dark:ring-accent-2/15 shadow-[0_0_30px_rgba(122,31,61,0.08)] dark:shadow-[0_0_30px_rgba(232,175,160,0.08)]' 
+        : 'border-ink/10 dark:border-ink-dark/10'
+    }`}>
+      {isExtremelyRare && (
+        <>
+          <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-accent/20 to-accent-3/20 dark:from-accent-2/15 dark:to-accent-3/15 rounded-full blur-2xl -translate-y-12 translate-x-12 pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-accent-2/15 to-transparent rounded-full blur-xl translate-y-12 -translate-x-12 pointer-events-none animate-pulse" style={{ animationDuration: '5s' }} />
+        </>
+      )}
       <div className="lo-grain animate-pulse" />
       <div className="relative flex flex-col gap-4">
         {/* Card Header metadata */}

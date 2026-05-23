@@ -24,6 +24,11 @@ export const AIQueryInput: React.FC<AIQueryInputProps> = ({ onSubmit, onExample 
       label: "Profesionista 30–35 · sin hijos",
       prompt: "Busco una persona profesionista, entre 30 y 35 años, soltera, sin hijos, graduada de universidad y que viva en Monterrey.",
       preset: "A"
+    },
+    {
+      label: "Promedio Nacional Mexicano",
+      prompt: "Busco una persona soltera a nivel nacional, entre 25 y 45 años, con ingresos promedio y con o sin hijos.",
+      preset: "B"
     }
   ];
 

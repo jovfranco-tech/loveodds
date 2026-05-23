@@ -61,8 +61,11 @@ export const PopulationFunnel: React.FC<PopulationFunnelProps> = ({ result }) =>
               {/* Proportional horizontal bar */}
               <div className={`h-[6px] rounded-full bg-deep-light dark:bg-deep-dark overflow-hidden relative ${isTerm ? 'h-[8px]' : ''}`}>
                 <div
-                  style={{ width: `${barWidth}%` }}
-                  className={`h-full rounded-full transition-all duration-1000 ${
+                  style={{ 
+                    width: `${barWidth}%`,
+                    transitionDelay: mounted ? `${idx * 120}ms` : '0ms'
+                  }}
+                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
                     isTerm 
                       ? 'bg-accent dark:bg-accent-2' 
                       : isFirst 
