@@ -29,9 +29,9 @@ export default {
           dark: '#F4EEF1',
         },
         accent: {
-          DEFAULT: '#7A1F3D',
-          2: '#C0395E',
-          3: '#E8AFA0',
+          DEFAULT: 'var(--accent)',
+          2: 'var(--accent-2)',
+          3: 'var(--accent-3)',
         },
         pos: '#1F6B4A',
         warn: '#9A6B14',

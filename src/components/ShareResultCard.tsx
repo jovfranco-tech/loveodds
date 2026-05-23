@@ -269,37 +269,36 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
 
       {/* Share Actions Buttons */}
       <div className="flex flex-col gap-2.5 w-full">
+        <button
+          onClick={handleShare}
+          disabled={sharingLoading}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[14px] hover:scale-[1.015] active:scale-[0.98] transition-all select-none shadow-shd-1 disabled:opacity-50"
+        >
+          {sharingLoading ? (
+            <span className="w-4 h-4 border-2 border-bg-light dark:border-bg-dark border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <LoIcon name="share" size={14} />
+          )}
+          {sharingLoading ? "Generando link..." : (typeof navigator !== 'undefined' && (navigator as any).share ? "Compartir Reporte" : (copied ? "¡Enlace Copiado!" : "Compartir Enlace"))}
+        </button>
+
         <div className="flex gap-2.5 w-full">
           <button
             onClick={handleCopy}
             disabled={sharingLoading}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none disabled:opacity-50"
           >
-            {sharingLoading ? (
-              <span className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" stroke-width="2" />
-            ) : (
-              <LoIcon name="copy" size={14} />
-            )}
-            {sharingLoading ? "Creando link..." : (copied ? "¡Copiado!" : "Copiar texto + Link")}
+            <LoIcon name="copy" size={13} className="shrink-0" />
+            {copied ? "¡Copiado!" : "Copiar Texto"}
           </button>
           <button
             onClick={handleDownloadPNG}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-ink dark:bg-ink-dark text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none"
           >
-            <LoIcon name="share" size={14} />
-            Descargar PNG
+            <LoIcon name="sparkle" size={13} className="shrink-0" />
+            Descargar Imagen
           </button>
         </div>
-        {typeof navigator !== 'undefined' && (navigator as any).share && (
-          <button
-            onClick={handleShare}
-            disabled={sharingLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1 disabled:opacity-50"
-          >
-            <LoIcon name="share" size={14} />
-            {sharingLoading ? "Creando link..." : "Compartir nativo"}
-          </button>
-        )}
       </div>
 
       {/* Suggested share text card preview */}
