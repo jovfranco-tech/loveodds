@@ -31,9 +31,9 @@ export const App: React.FC = () => {
   const [inputText, setInputText] = useState("");
   const [isFrameMode, setIsFrameMode] = useState(false);
 
-  // Secure API key state, persisted in sessionStorage
+  // Secure API key state, persisted in sessionStorage, with VITE_OPENAI_API_KEY environment fallback
   const [apiKey, setApiKey] = useState<string>(() => {
-    return sessionStorage.getItem('loveodds_openai_key') || '';
+    return sessionStorage.getItem('loveodds_openai_key') || ((import.meta as any).env?.VITE_OPENAI_API_KEY as string) || '';
   });
 
   const [aiResult, setAiResult] = useState<AICalibrationResult | undefined>(undefined);
@@ -84,7 +84,14 @@ export const App: React.FC = () => {
   };
 
   const go = (s: string) => {
-    setScreen(s);
+    const doc = document as any;
+    if (doc.startViewTransition) {
+      doc.startViewTransition(() => {
+        setScreen(s);
+      });
+    } else {
+      setScreen(s);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

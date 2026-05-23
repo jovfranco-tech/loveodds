@@ -40,6 +40,22 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'LoveOdds MX - Mi estándar romántico',
+          text: shareText,
+          url: window.location.origin
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      handleCopy();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-5 py-4 px-6 lo-fade-in">
       <div className="flex flex-col gap-2">
@@ -206,8 +222,17 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
           className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none"
         >
           <LoIcon name="copy" size={14} />
-          {copied ? "¡Copiado al portapapeles!" : "Copiar texto"}
+          {copied ? "¡Copiado!" : "Copiar texto"}
         </button>
+        {typeof navigator !== 'undefined' && (navigator as any).share && (
+          <button
+            onClick={handleShare}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
+          >
+            <LoIcon name="share" size={14} />
+            Compartir nativo
+          </button>
+        )}
       </div>
 
       {/* Suggested share text card preview */}
