@@ -148,3 +148,46 @@
 .lo-stage {
   transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease;
 }
+
+/* Premium Liquid Glow drifting keyframe animations */
+@keyframes liquidGlowOne {
+  0% {
+    transform: translate(32px, -32px) scale(1) rotate(0deg);
+    opacity: 0.65;
+  }
+  33% {
+    transform: translate(12px, -20px) scale(1.15) rotate(120deg);
+    opacity: 0.85;
+  }
+  66% {
+    transform: translate(24px, -10px) scale(0.9) rotate(240deg);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(32px, -32px) scale(1) rotate(360deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes liquidGlowTwo {
+  0% {
+    transform: translate(-32px, 32px) scale(1) rotate(0deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-10px, 12px) scale(1.2) rotate(-180deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-32px, 32px) scale(1) rotate(-360deg);
+    opacity: 0.55;
+  }
+}
+
+.animate-liquid-glow-1 {
+  animation: liquidGlowOne 8s ease-in-out infinite;
+}
+
+.animate-liquid-glow-2 {
+  animation: liquidGlowTwo 10s ease-in-out infinite;
+}

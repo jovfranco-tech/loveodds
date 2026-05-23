@@ -81,8 +81,8 @@ export const MainProbabilityCard: React.FC<MainProbabilityCardProps> = ({ result
     >
       {isExtremelyRare && (
         <>
-          <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-accent/20 to-accent-3/20 dark:from-accent-2/15 dark:to-accent-3/15 rounded-full blur-2xl -translate-y-12 translate-x-12 pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-accent-2/15 to-transparent rounded-full blur-xl translate-y-12 -translate-x-12 pointer-events-none animate-pulse" style={{ animationDuration: '5s' }} />
+          <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-accent/20 to-accent-3/20 dark:from-accent-2/15 dark:to-accent-3/15 rounded-full blur-2xl pointer-events-none animate-liquid-glow-1" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-accent-2/15 to-transparent rounded-full blur-xl pointer-events-none animate-liquid-glow-2" />
         </>
       )}
       <div className="lo-grain animate-pulse" />
