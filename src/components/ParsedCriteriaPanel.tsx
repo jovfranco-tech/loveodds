@@ -134,7 +134,7 @@ const EditableCriterion: React.FC<EditableCriterionProps> = ({ item }) => {
 
   return (
     <div 
-      className="p-4 rounded-md border border-ink/10 dark:border-ink-dark/10 bg-elev-light dark:bg-elev-dark flex flex-col gap-3 transition-colors cursor-pointer hover:border-ink/20 dark:hover:border-ink-dark/20"
+      className="p-4 rounded-md border border-ink/10 dark:border-ink-dark/10 bg-elev-light dark:bg-elev-dark flex flex-col gap-3 transition-all duration-300 cursor-pointer hover:scale-[1.01] hover:border-accent/40 dark:hover:border-accent-2/40 hover:shadow-sm active:scale-[0.995]"
       onClick={() => setOpen(!open)}
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(!open); } }}

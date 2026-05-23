@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Criteria, EstimationResult } from '../types';
 import { LoIcon } from './Icons';
+import { toPng } from 'html-to-image';
 
 
 interface ShareResultCardProps {
@@ -11,6 +12,7 @@ interface ShareResultCardProps {
 export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, result }) => {
   const [variant, setVariant] = useState<'editorial' | 'mono' | 'poster'>('editorial');
   const [copied, setCopied] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const pct = result.pct;
   const tier = result.rarityLevel;
@@ -56,6 +58,24 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
     }
   };
 
+  const handleDownloadPNG = async () => {
+    if (cardRef.current === null) return;
+    try {
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        style: {
+          transform: 'scale(1)',
+        }
+      });
+      const link = document.createElement('a');
+      link.download = `loveodds-reporte-${criteria.ubicacion.toLowerCase()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('oops, something went wrong with PNG export!', err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-5 py-4 px-6 lo-fade-in">
       <div className="flex flex-col gap-2">
@@ -85,7 +105,7 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
       </div>
 
       {/* Render selected Card variant */}
-      <div className="aspect-[1/1.22] w-full rounded-2xl overflow-hidden shadow-shd-2 border border-ink/10 dark:border-ink-dark/10 relative lo-fade-in">
+      <div ref={cardRef} className="aspect-[1/1.22] w-full rounded-2xl overflow-hidden shadow-shd-2 border border-ink/10 dark:border-ink-dark/10 relative lo-fade-in">
         {variant === 'editorial' && (
           <div className="w-full h-full p-7 bg-bg-light dark:bg-bg-dark text-ink dark:text-ink-dark flex flex-col justify-between relative">
             <div className="lo-grain" />
@@ -216,18 +236,27 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
       </div>
 
       {/* Share Actions Buttons */}
-      <div className="flex gap-2.5">
-        <button
-          onClick={handleCopy}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none"
-        >
-          <LoIcon name="copy" size={14} />
-          {copied ? "¡Copiado!" : "Copiar texto"}
-        </button>
+      <div className="flex flex-col gap-2.5 w-full">
+        <div className="flex gap-2.5 w-full">
+          <button
+            onClick={handleCopy}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none"
+          >
+            <LoIcon name="copy" size={14} />
+            {copied ? "¡Copiado!" : "Copiar texto"}
+          </button>
+          <button
+            onClick={handleDownloadPNG}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-ink dark:bg-ink-dark text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
+          >
+            <LoIcon name="share" size={14} />
+            Descargar PNG
+          </button>
+        </div>
         {typeof navigator !== 'undefined' && (navigator as any).share && (
           <button
             onClick={handleShare}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
           >
             <LoIcon name="share" size={14} />
             Compartir nativo
