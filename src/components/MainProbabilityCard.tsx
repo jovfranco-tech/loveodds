@@ -37,13 +37,48 @@ export const MainProbabilityCard: React.FC<MainProbabilityCardProps> = ({ result
                               : 'translate-y-[-18px]';
 
   const isExtremelyRare = tier.rank >= 5;
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const [rotateX, setRotateX] = React.useState(0);
+  const [rotateY, setRotateY] = React.useState(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Rotate up to 8 degrees
+    const rotateYVal = ((x - centerX) / centerX) * 8;
+    const rotateXVal = ((centerY - y) / centerY) * 8;
+    
+    setRotateX(rotateXVal);
+    setRotateY(rotateYVal);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
 
   return (
-    <div className={`lo-card relative overflow-hidden p-6 rounded-xl bg-elev-light dark:bg-elev-dark border shadow-shd-2 select-none lo-fade-in ${
-      isExtremelyRare 
-        ? 'border-accent/25 dark:border-accent-2/25 ring-1 ring-accent/15 dark:ring-accent-2/15 shadow-[0_0_30px_rgba(122,31,61,0.08)] dark:shadow-[0_0_30px_rgba(232,175,160,0.08)]' 
-        : 'border-ink/10 dark:border-ink-dark/10'
-    }`}>
+    <div 
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transition: 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease',
+        transformStyle: 'preserve-3d',
+      }}
+      className={`lo-card relative overflow-hidden p-6 rounded-xl bg-elev-light dark:bg-elev-dark border shadow-shd-2 select-none lo-fade-in ${
+        isExtremelyRare 
+          ? 'border-accent/25 dark:border-accent-2/25 ring-1 ring-accent/15 dark:ring-accent-2/15 shadow-[0_0_30px_rgba(122,31,61,0.08)] dark:shadow-[0_0_30px_rgba(232,175,160,0.08)]' 
+          : 'border-ink/10 dark:border-ink-dark/10'
+      }`}
+    >
       {isExtremelyRare && (
         <>
           <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-accent/20 to-accent-3/20 dark:from-accent-2/15 dark:to-accent-3/15 rounded-full blur-2xl -translate-y-12 translate-x-12 pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />

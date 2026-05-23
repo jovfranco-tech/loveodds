@@ -39,6 +39,28 @@ export const App: React.FC = () => {
 
   const [aiResult, setAiResult] = useState<AICalibrationResult | undefined>(undefined);
   const [calibrations, setCalibrations] = useState<any>(undefined);
+  const [history, setHistory] = useState<Criteria[]>(() => {
+    try {
+      const raw = localStorage.getItem("loveodds_search_history");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const addToHistory = (newCriteria: Criteria) => {
+    setHistory(prev => {
+      // Avoid duplicate states in history
+      const filtered = prev.filter(c => JSON.stringify(c) !== JSON.stringify(newCriteria));
+      const updated = [newCriteria, ...filtered].slice(0, 3); // Keep last 3 searches
+      try {
+        localStorage.setItem("loveodds_search_history", JSON.stringify(updated));
+      } catch (err) {
+        console.error("Failed to save history to localStorage:", err);
+      }
+      return updated;
+    });
+  };
 
   const [tweaks, setTweaks] = useState<TweakConfig>({
     dark: false,
@@ -175,18 +197,21 @@ export const App: React.FC = () => {
         const result = await queryOpenAI(text, apiKey);
         setCriteria(result.criteria);
         setAiResult(result);
+        addToHistory(result.criteria);
       } catch (err) {
         console.error("OpenAI failed, falling back to local regex parser:", err);
         // Fallback to local mode
         const parsed = parseNaturalLanguageQuery(text);
         setCriteria(parsed);
         setAiResult(undefined);
+        addToHistory(parsed);
       }
     } else {
       // Local Mode
       const parsed = parseNaturalLanguageQuery(text);
       setCriteria(parsed);
       setAiResult(undefined);
+      addToHistory(parsed);
     }
   };
 
@@ -232,11 +257,50 @@ export const App: React.FC = () => {
         return (
           <div className="lo-app h-full">
             <AppHeader onBack={() => go("hero")} title="01 · BÚSQUEDA" />
-            <div className="lo-scroll flex-1">
+            <div className="lo-scroll flex-1 pb-6">
               <AIQueryInput
                 onSubmit={handleQuerySubmit}
                 onExample={handleApplyPreset}
               />
+              
+              {/* Local History Section */}
+              {history.length > 0 && (
+                <div className="px-6 mt-4 flex flex-col gap-3 lo-fade-in select-none">
+                  <div className="flex items-center gap-3 text-ink-3 dark:text-ink-4">
+                    <div className="flex-1 h-[0.5px] bg-ink/10 dark:bg-ink-dark/10" />
+                    <span className="font-mono text-[9.5px] tracking-[0.18em] uppercase">Búsquedas recientes</span>
+                    <div className="flex-1 h-[0.5px] bg-ink/10 dark:bg-ink-dark/10" />
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    {history.map((hist, i) => {
+                      const desc = `${hist.busca} · ${hist.ubicacion} · ${hist.edadMin === hist.edadMax ? `${hist.edadMin} años` : `${hist.edadMin}-${hist.edadMax} años`} · ${hist.estado || "Cualquiera"}`;
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setCriteria(hist);
+                            setAiResult(undefined);
+                            setInputText(`Búsqueda histórica: ${desc}`);
+                            go("calculating");
+                          }}
+                          className="w-full flex items-center justify-between p-3.5 rounded-lg border border-ink/10 dark:border-white/10 bg-elev-light dark:bg-elev-dark text-left hover:scale-[1.01] hover:border-accent/30 dark:hover:border-accent-2/30 active:scale-[0.99] transition-all"
+                        >
+                          <div className="flex flex-col gap-1 min-w-0 flex-1">
+                            <span className="text-[12.5px] font-semibold text-ink dark:text-ink-dark truncate">
+                              {desc}
+                            </span>
+                            <span className="text-[10px] font-mono text-ink-3 dark:text-ink-4">
+                              {hist.ingresoMin ? `≥ ${loFmtMoney(hist.ingresoMin)}/mes` : 'Cualquier ingreso'} {hist.estaturaMin ? ` · ≥ ${hist.estaturaMin.toFixed(2)}m` : ''} {hist.hijos ? ` · ${hist.hijos}` : ''}
+                            </span>
+                          </div>
+                          <LoIcon name="arrow-right" size={13} className="text-accent dark:text-accent-3 shrink-0 ml-3" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -270,7 +334,10 @@ export const App: React.FC = () => {
             {/* Sticky Action Footer */}
             <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-bg-light dark:from-bg-dark to-transparent relative z-20">
               <button
-                onClick={() => go("calculating")}
+                onClick={() => {
+                  addToHistory(criteria);
+                  go("calculating");
+                }}
                 className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-md font-semibold text-[15px] bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark active:scale-[0.985] transition-all select-none shadow-shd-1"
               >
                 Calcular rareza poblacional
