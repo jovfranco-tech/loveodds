@@ -10,6 +10,7 @@ export interface Criteria {
   nacionalidad: string | null;
   escolaridad: 'Bachillerato+' | 'Licenciatura+' | 'Posgrado+' | null;
   ocupacion: string | null;
+  estiloVida: 'Fitness' | 'Deportista' | 'Cualquiera' | null;
 }
 
 export interface FunnelStep {

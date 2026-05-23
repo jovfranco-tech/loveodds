@@ -123,6 +123,14 @@ export function parseNaturalLanguageQuery(query: string): Criteria {
     }
   }
 
+  // 11. Lifestyle
+  let estiloVida: 'Fitness' | 'Deportista' | 'Cualquiera' | null = null;
+  if (/\b(fitness|fit|gimnasio|gym|ejercicio)\b/.test(q)) {
+    estiloVida = 'Fitness';
+  } else if (/\b(deportista|atleta|nadador|nadadora|corredor|corredora)\b/.test(q)) {
+    estiloVida = 'Deportista';
+  }
+
   return {
     busca,
     ubicacion,
@@ -135,5 +143,6 @@ export function parseNaturalLanguageQuery(query: string): Criteria {
     nacionalidad,
     escolaridad,
     ocupacion,
+    estiloVida,
   };
 }

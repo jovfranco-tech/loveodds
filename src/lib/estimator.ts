@@ -11,6 +11,7 @@ export interface AICalibrationResult {
     ingreso?: number;
     estatura?: number;
     escolaridad?: number;
+    estiloVida?: number;
   };
   realityCheckHeadline?: string;
   realityCheckDetail?: string;
@@ -36,6 +37,9 @@ export interface CalibrationOverrides {
     [key: string]: { mean: number; stdDev: number };
   };
   education?: {
+    [key: string]: number;
+  };
+  lifestyle?: {
     [key: string]: number;
   };
 }
@@ -230,6 +234,25 @@ export function loComputeFunnel(
     steps.push({
       label: `Escolaridad: ${c.escolaridad}`,
       sub: "INEGI · ENOE 2025",
+      n: cur,
+      kept: ratio,
+    });
+  }
+
+  // 8. Lifestyle habits / physical activity (CONADE)
+  if (c.estiloVida && c.estiloVida !== 'Cualquiera') {
+    let r = 1.0;
+    const lMap = calibrations?.lifestyle ?? {
+      "Fitness": 0.25, // 25% of adult population do constant gym/physical exercise
+      "Deportista": 0.08 // 8% are active athletes/swimmers/runners
+    };
+    r = lMap[c.estiloVida] ?? 1.0;
+
+    const ratio = customMultipliers?.estiloVida ?? r;
+    cur = cur * ratio;
+    steps.push({
+      label: `Hábitos: ${c.estiloVida}`,
+      sub: "CONADE · Cultura Física y Deporte",
       n: cur,
       kept: ratio,
     });

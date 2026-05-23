@@ -90,6 +90,13 @@ export const ParsedCriteriaPanel: React.FC<ParsedCriteriaPanelProps> = ({ criter
       pick: ["Sin filtro", "Bachillerato+", "Licenciatura+", "Posgrado+"],
       set: (v: string) => updateCriteria({ escolaridad: v === "Sin filtro" ? null : v as 'Bachillerato+' | 'Licenciatura+' | 'Posgrado+' })
     },
+    {
+      k: "Estilo de Vida y Hábitos",
+      v: c.estiloVida || "Sin filtro",
+      icon: "heart-line",
+      pick: ["Sin filtro", "Fitness", "Deportista"],
+      set: (v: string) => updateCriteria({ estiloVida: v === "Sin filtro" ? null : v as 'Fitness' | 'Deportista' })
+    },
   ];
 
   return (

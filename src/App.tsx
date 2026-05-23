@@ -302,7 +302,7 @@ export const App: React.FC = () => {
                               {desc}
                             </span>
                             <span className="text-[10px] font-mono text-ink-3 dark:text-ink-4">
-                              {hist.ingresoMin ? `≥ ${loFmtMoney(hist.ingresoMin)}/mes` : 'Cualquier ingreso'} {hist.estaturaMin ? ` · ≥ ${hist.estaturaMin.toFixed(2)}m` : ''} {hist.hijos ? ` · ${hist.hijos}` : ''}
+                              {hist.ingresoMin ? `≥ ${loFmtMoney(hist.ingresoMin)}/mes` : 'Cualquier ingreso'}{hist.estaturaMin ? ` · ≥ ${hist.estaturaMin.toFixed(2)}m` : ''}{hist.hijos ? ` · ${hist.hijos}` : ''}{hist.estiloVida ? ` · ${hist.estiloVida}` : ''}
                             </span>
                           </div>
                           <LoIcon name="arrow-right" size={13} className="text-accent dark:text-accent-3 shrink-0 ml-3" />
