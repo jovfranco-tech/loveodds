@@ -4,6 +4,7 @@ import { LO_DEFAULT_CRITERIA, LO_EXAMPLE_B, PALETTES } from './data/mockStats';
 import { parseNaturalLanguageQuery } from './lib/parser';
 import { estimatePopulation, loFmtMoney } from './lib/estimator';
 import { queryOpenAI, AICalibrationResult } from './lib/openai';
+import { db } from './lib/firebase';
 
 // Components
 import { AppHeader } from './components/AppHeader';
@@ -37,6 +38,7 @@ export const App: React.FC = () => {
   });
 
   const [aiResult, setAiResult] = useState<AICalibrationResult | undefined>(undefined);
+  const [calibrations, setCalibrations] = useState<any>(undefined);
 
   const [tweaks, setTweaks] = useState<TweakConfig>({
     dark: false,
@@ -79,6 +81,67 @@ export const App: React.FC = () => {
     }
   }, [tweaks.dark]);
 
+  // Mount logic: Load census calibrations and parse shared link /r/{id} router
+  useEffect(() => {
+    const fetchCalibrations = async () => {
+      if (!db) return;
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const snap = await getDoc(doc(db, "calibrations", "mx_v1"));
+        if (snap.exists()) {
+          setCalibrations(snap.data());
+          console.log("Calibraciones oficiales cargadas desde Firestore.");
+        }
+      } catch (err) {
+        console.error("Error loading calibrations from Firestore:", err);
+      }
+    };
+    fetchCalibrations();
+
+    const path = window.location.pathname;
+    if (path.startsWith('/r/')) {
+      const resultId = path.split('/r/')[1]?.trim();
+      if (resultId) {
+        setScreen("shared_loading");
+        const fetchSharedResult = async () => {
+          if (!db) {
+            console.error("Firestore db not initialized.");
+            setScreen("hero");
+            return;
+          }
+          try {
+            const { doc, getDoc } = await import('firebase/firestore');
+            const snap = await getDoc(doc(db, "results", resultId));
+            if (snap.exists()) {
+              const data = snap.data();
+              if (data.criteria) {
+                setCriteria(data.criteria);
+                if (data.aiResult) {
+                  setAiResult(data.aiResult);
+                }
+                const docTransition = document as any;
+                if (docTransition.startViewTransition) {
+                  docTransition.startViewTransition(() => {
+                    setScreen("result");
+                  });
+                } else {
+                  setScreen("result");
+                }
+                return;
+              }
+            }
+            console.warn("Shared result not found or invalid format.");
+            setScreen("hero");
+          } catch (err) {
+            console.error("Error loading shared result:", err);
+            setScreen("hero");
+          }
+        };
+        fetchSharedResult();
+      }
+    }
+  }, []);
+
   const setTweak = <K extends keyof TweakConfig>(key: K, val: TweakConfig[K]) => {
     setTweaks(prev => ({ ...prev, [key]: val }));
   };
@@ -95,8 +158,8 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Compute stats funnel & reality check using custom AI override if available!
-  const estimationResult = estimatePopulation(criteria, aiResult);
+  // Compute stats funnel & reality check using custom AI override and Firestore calibrations!
+  const estimationResult = estimatePopulation(criteria, aiResult, calibrations);
 
   // Flow controllers
   const handleQuerySubmit = async (text: string) => {
@@ -389,10 +452,42 @@ export const App: React.FC = () => {
             <AppHeader onBack={() => go("result")} title="04 · COMPARTIR" />
             <div className="lo-scroll flex-1 pb-10">
               <div className="max-w-md mx-auto">
-                <ShareResultCard criteria={criteria} result={estimationResult} />
+                <ShareResultCard criteria={criteria} result={estimationResult} aiResult={aiResult} />
                 <EthicsDisclaimer />
               </div>
             </div>
+          </div>
+        );
+      case "shared_loading":
+        return (
+          <div className="lo-app h-full flex flex-col justify-center items-center gap-6 text-center py-20 px-6 lo-fade-in select-none">
+            <span className="font-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-ink-3 dark:text-ink-4">
+              Cargando reporte
+            </span>
+            <div className="relative w-24 h-24">
+              {[0, 1, 2].map((idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    animation: `lo-ring 2.4s ease-out ${idx * 0.7}s infinite`,
+                  }}
+                  className="absolute inset-0 rounded-full border border-accent/70 dark:border-accent-2/70 opacity-0"
+                />
+              ))}
+              <div className="absolute inset-8 rounded-full bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark flex items-center justify-center shadow-shd-1">
+                <LoIcon name="sparkle" size={16} className="animate-pulse" />
+              </div>
+            </div>
+            <p className="text-[13.5px] text-ink-2 dark:text-ink-3">
+              Obteniendo análisis oficial y calibración INEGI...
+            </p>
+            <style>{`
+              @keyframes lo-ring {
+                0% { opacity: 0; transform: scale(.3); }
+                20% { opacity: .6; }
+                100% { opacity: 0; transform: scale(1); }
+              }
+            `}</style>
           </div>
         );
       default:

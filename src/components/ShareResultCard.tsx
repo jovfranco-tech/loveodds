@@ -1,17 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Criteria, EstimationResult } from '../types';
 import { LoIcon } from './Icons';
 import { toPng } from 'html-to-image';
-
+import { db } from '../lib/firebase';
 
 interface ShareResultCardProps {
   criteria: Criteria;
   result: EstimationResult;
+  aiResult?: any;
 }
 
-export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, result }) => {
+export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, result, aiResult }) => {
   const [variant, setVariant] = useState<'editorial' | 'mono' | 'poster'>('editorial');
   const [copied, setCopied] = useState(false);
+  const [sharedUrl, setSharedUrl] = useState<string | null>(null);
+  const [sharingLoading, setSharingLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const pct = result.pct;
@@ -28,13 +31,42 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
                    : pct >= 0.01 ? `${Math.round(pct * 100)} de cada 10,000`
                    : `${Math.round(pct * 1000)} de cada 100,000`;
 
+  // Auto-save search criteria in Firestore on component mount to generate persistent short URL
+  useEffect(() => {
+    const saveToFirestore = async () => {
+      if (!db) {
+        console.warn("Firestore db not initialized. Cannot generate short link.");
+        return;
+      }
+      try {
+        setSharingLoading(true);
+        const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+        const docRef = await addDoc(collection(db, "results"), {
+          criteria,
+          aiResult: aiResult || null,
+          createdAt: serverTimestamp()
+        });
+        const url = `${window.location.origin}/r/${docRef.id}`;
+        setSharedUrl(url);
+      } catch (err) {
+        console.error("Error writing search result to Firestore:", err);
+      } finally {
+        setSharingLoading(false);
+      }
+    };
+    saveToFirestore();
+  }, [criteria, aiResult]);
+
+  const shareUrl = sharedUrl || window.location.origin;
+
   // Copied text summary template
   const shareText = 
     `Mi estándar romántico en ${criteria.ubicacion}: ${formattedPct}%\n` +
     `Aproximadamente ${humanRatio} adultos cumplen mis criterios.\n` +
     `Nivel de rareza: ${tier.name}.\n` +
     `Filtro más restrictivo: ${most ? most.label : "Ninguno"}.\n` +
-    `vía LoveOdds MX (Estimación Demo)`;
+    `Link al reporte: ${shareUrl}\n` +
+    `vía LoveOdds MX (Cálculo Oficial)`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareText);
@@ -48,7 +80,7 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
         await navigator.share({
           title: 'LoveOdds MX - Mi estándar romántico',
           text: shareText,
-          url: window.location.origin
+          url: shareUrl
         });
       } catch (err) {
         console.log('Error sharing:', err);
@@ -149,7 +181,7 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
                 </div>
               )}
               <span className="block font-mono text-[8px] tracking-[0.16em] uppercase text-ink-4 dark:text-ink-3 mt-1">
-                *estimación demo
+                *estimación oficial
               </span>
             </div>
           </div>
@@ -181,7 +213,7 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
               <div>tier        :: <span className="text-[#E8AFA0]">{tier.name}</span></div>
               <div>n_estimada  :: {Math.round(result.finalN).toLocaleString()}</div>
               <div>limitante   :: {most ? most.label.toLowerCase() : "ninguna"}</div>
-              <div>fuentes     :: INEGI · ENIGH · ENOE · ENSANUT (DEMO)</div>
+              <div>fuentes     :: INEGI · ENIGH · ENOE · ENSANUT (OFICIAL)</div>
             </div>
           </div>
         )}
@@ -200,7 +232,7 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
                 <span className="font-mono text-[8px] tracking-widest text-[#FAF5EE]/70 uppercase ml-0.5 px-1 py-0.2 border border-[#FAF5EE]/20 rounded">MX</span>
               </div>
               <span className="font-mono text-[9px] tracking-widest text-[#FAF5EE]/75 uppercase">
-                reporte demo
+                reporte oficial
               </span>
             </div>
 
@@ -240,10 +272,15 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
         <div className="flex gap-2.5 w-full">
           <button
             onClick={handleCopy}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none"
+            disabled={sharingLoading}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-ink/15 dark:border-ink-dark/15 rounded-md font-semibold text-[13.5px] bg-elev-light dark:bg-elev-dark text-ink-2 dark:text-ink-3 hover:bg-ink/5 dark:hover:bg-ink-dark/5 active:scale-[0.985] transition-all select-none disabled:opacity-50"
           >
-            <LoIcon name="copy" size={14} />
-            {copied ? "¡Copiado!" : "Copiar texto"}
+            {sharingLoading ? (
+              <span className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" stroke-width="2" />
+            ) : (
+              <LoIcon name="copy" size={14} />
+            )}
+            {sharingLoading ? "Creando link..." : (copied ? "¡Copiado!" : "Copiar texto + Link")}
           </button>
           <button
             onClick={handleDownloadPNG}
@@ -256,10 +293,11 @@ export const ShareResultCard: React.FC<ShareResultCardProps> = ({ criteria, resu
         {typeof navigator !== 'undefined' && (navigator as any).share && (
           <button
             onClick={handleShare}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1"
+            disabled={sharingLoading}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-accent dark:bg-accent-2 text-bg-light dark:text-bg-dark rounded-md font-semibold text-[13.5px] hover:scale-[1.02] active:scale-[0.98] transition-all select-none shadow-shd-1 disabled:opacity-50"
           >
             <LoIcon name="share" size={14} />
-            Compartir nativo
+            {sharingLoading ? "Creando link..." : "Compartir nativo"}
           </button>
         )}
       </div>

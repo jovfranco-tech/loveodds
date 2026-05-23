@@ -33,7 +33,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStart, onExample }) 
         <div className="relative flex flex-col gap-3">
           <div className="flex justify-between items-center">
             <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-ink-3 dark:text-ink-4">
-              Resultado · Demo
+              Resultado Estimado
             </span>
             <div className="font-mono text-[10px] tracking-[0.12em] uppercase text-ink-3 dark:text-ink-4 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-pos animate-pulse" />

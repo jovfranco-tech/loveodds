@@ -17,6 +17,29 @@ export interface AICalibrationResult {
   customWhatIfs?: Scenario[];
 }
 
+export interface CalibrationOverrides {
+  basePopulations?: {
+    [key: string]: { Mujer: number; Hombre: number; Persona: number };
+  };
+  maritalStatus?: {
+    [key: string]: number;
+  };
+  children?: {
+    "Sin hijos": number;
+    "Con hijos": number;
+  };
+  nationality?: {
+    [key: string]: number;
+  };
+  income?: { limit: number | null; ratio: number }[];
+  height?: {
+    [key: string]: { mean: number; stdDev: number };
+  };
+  education?: {
+    [key: string]: number;
+  };
+}
+
 // Standard normal cumulative distribution function
 function normCdf(z: number): number {
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
@@ -38,23 +61,19 @@ export function loFmtMoney(n: number): string {
 
 export function loComputeFunnel(
   c: Criteria,
-  customMultipliers?: AICalibrationResult['customMultipliers']
+  customMultipliers?: AICalibrationResult['customMultipliers'],
+  calibrations?: CalibrationOverrides
 ): { steps: FunnelStep[]; pct: number; finalN: number; base: number } {
   // Base population of adults (18+)
   let base = 0;
-  if (c.ubicacion === 'CDMX') {
-    base = c.busca === 'Mujer' ? 3980000 
-         : c.busca === 'Hombre' ? 3420000 
-         : 7400000;
-  } else if (c.ubicacion === 'ZMVM') {
-    base = c.busca === 'Mujer' ? 9400000 
-         : c.busca === 'Hombre' ? 8750000 
-         : 18150000;
-  } else {
-    base = c.busca === 'Mujer' ? 51200000 
-         : c.busca === 'Hombre' ? 47800000 
-         : 99000000;
-  }
+  const pMap = calibrations?.basePopulations ?? {
+    CDMX: { Mujer: 3980000, Hombre: 3420000, Persona: 7400000 },
+    ZMVM: { Mujer: 9400000, Hombre: 8750000, Persona: 18150000 },
+    Nacional: { Mujer: 51200000, Hombre: 47800000, Persona: 99000000 }
+  };
+  const loc = c.ubicacion === 'CDMX' ? 'CDMX' : c.ubicacion === 'ZMVM' ? 'ZMVM' : 'Nacional';
+  const gender = c.busca === 'Mujer' ? 'Mujer' : c.busca === 'Hombre' ? 'Hombre' : 'Persona';
+  base = pMap[loc]?.[gender] ?? 99000000;
 
   const steps: FunnelStep[] = [{
     label: "Población base",
@@ -83,13 +102,15 @@ export function loComputeFunnel(
   // 2. Marital Status
   if (c.estado && c.estado !== 'Cualquiera') {
     let r = 1.0;
-    if (c.estado === 'Soltero' || c.estado === 'Soltera') {
-      r = 0.36;
-    } else if (c.estado === 'Divorciado' || c.estado === 'Divorciada') {
-      r = 0.06;
-    } else if (c.estado === 'Soltero+Divorciado' || c.estado === 'Soltera+Divorciada') {
-      r = 0.42;
-    }
+    const mStatus = calibrations?.maritalStatus ?? {
+      "Soltero": 0.36,
+      "Soltera": 0.36,
+      "Divorciado": 0.06,
+      "Divorciada": 0.06,
+      "Soltero+Divorciado": 0.42,
+      "Soltera+Divorciada": 0.42
+    };
+    r = mStatus[c.estado] ?? 1.0;
     const ratio = customMultipliers?.estado ?? r;
     cur = cur * ratio;
     steps.push({
@@ -102,7 +123,8 @@ export function loComputeFunnel(
 
   // 3. Children (Sin Hijos)
   if (c.hijos === 'Sin hijos') {
-    const ratio = customMultipliers?.hijos ?? 0.42;
+    const r = calibrations?.children?.["Sin hijos"] ?? 0.42;
+    const ratio = customMultipliers?.hijos ?? r;
     cur = cur * ratio;
     steps.push({
       label: "Sin hijos en el hogar",
@@ -111,7 +133,8 @@ export function loComputeFunnel(
       kept: ratio,
     });
   } else if (c.hijos === 'Con hijos') {
-    const ratio = customMultipliers?.hijos ?? 0.58;
+    const r = calibrations?.children?.["Con hijos"] ?? 0.58;
+    const ratio = customMultipliers?.hijos ?? r;
     cur = cur * ratio;
     steps.push({
       label: "Con hijos en el hogar",
@@ -123,12 +146,15 @@ export function loComputeFunnel(
 
   // 4. Nationality / Origin
   if (c.nacionalidad) {
-    let r = 0.004;
-    if (c.nacionalidad === 'EEUU') r = 0.008;
-    if (c.nacionalidad === 'Colombia') r = 0.004;
-    if (c.nacionalidad === 'Argentina') r = 0.003;
-    if (c.nacionalidad === 'Venezuela') r = 0.005;
-    if (c.nacionalidad === 'México') r = 0.985;
+    let r = calibrations?.nationality?.["default"] ?? 0.004;
+    const nMap = calibrations?.nationality ?? {
+      "EEUU": 0.008,
+      "Colombia": 0.004,
+      "Argentina": 0.003,
+      "Venezuela": 0.005,
+      "México": 0.985
+    };
+    r = nMap[c.nacionalidad] ?? r;
     
     const ratio = customMultipliers?.nacionalidad ?? r;
     cur = cur * ratio;
@@ -142,14 +168,19 @@ export function loComputeFunnel(
 
   // 5. Income (ENIGH distribution)
   if (c.ingresoMin != null && c.ingresoMin > 0) {
-    let r = 1.0;
-    if (c.ingresoMin <= 15000) r = 0.55;
-    else if (c.ingresoMin <= 30000) r = 0.28;
-    else if (c.ingresoMin <= 50000) r = 0.12;
-    else if (c.ingresoMin <= 80000) r = 0.045;
-    else if (c.ingresoMin <= 100000) r = 0.022;
-    else if (c.ingresoMin <= 150000) r = 0.009;
-    else r = 0.004;
+    let r = 0.004;
+    if (calibrations?.income) {
+      const match = calibrations.income.find(item => item.limit === null || c.ingresoMin! <= item.limit);
+      r = match ? match.ratio : 0.004;
+    } else {
+      if (c.ingresoMin <= 15000) r = 0.55;
+      else if (c.ingresoMin <= 30000) r = 0.28;
+      else if (c.ingresoMin <= 50000) r = 0.12;
+      else if (c.ingresoMin <= 80000) r = 0.045;
+      else if (c.ingresoMin <= 100000) r = 0.022;
+      else if (c.ingresoMin <= 150000) r = 0.009;
+      else r = 0.004;
+    }
 
     const ratio = customMultipliers?.ingreso ?? r;
     cur = cur * ratio;
@@ -164,16 +195,16 @@ export function loComputeFunnel(
   // 6. Height (ENSANUT CDF)
   if (c.estaturaMin != null && c.estaturaMin > 0) {
     let r = 1.0;
-    if (c.busca === 'Mujer') {
-      const z = (c.estaturaMin * 100 - 157) / 6;
-      r = Math.max(0.001, 1 - normCdf(z));
-    } else if (c.busca === 'Hombre') {
-      const z = (c.estaturaMin * 100 - 169) / 7;
-      r = Math.max(0.001, 1 - normCdf(z));
-    } else {
-      const z = (c.estaturaMin * 100 - 163) / 8;
-      r = Math.max(0.001, 1 - normCdf(z));
-    }
+    const hMap = calibrations?.height ?? {
+      "Mujer": { mean: 157, stdDev: 6 },
+      "Hombre": { mean: 169, stdDev: 7 },
+      "Persona": { mean: 163, stdDev: 8 }
+    };
+    const key = c.busca === 'Mujer' ? 'Mujer' : c.busca === 'Hombre' ? 'Hombre' : 'Persona';
+    const params = hMap[key] ?? { mean: 163, stdDev: 8 };
+    const z = (c.estaturaMin * 100 - params.mean) / params.stdDev;
+    r = Math.max(0.001, 1 - normCdf(z));
+
     const ratio = customMultipliers?.estatura ?? r;
     cur = cur * ratio;
     steps.push({
@@ -187,13 +218,13 @@ export function loComputeFunnel(
   // 7. Education
   if (c.escolaridad) {
     let r = 1.0;
-    if (c.escolaridad === 'Licenciatura+') {
-      r = 0.34;
-    } else if (c.escolaridad === 'Posgrado+') {
-      r = 0.06;
-    } else if (c.escolaridad === 'Bachillerato+') {
-      r = 0.70;
-    }
+    const eMap = calibrations?.education ?? {
+      "Licenciatura+": 0.34,
+      "Posgrado+": 0.06,
+      "Bachillerato+": 0.70
+    };
+    r = eMap[c.escolaridad] ?? 1.0;
+
     const ratio = customMultipliers?.escolaridad ?? r;
     cur = cur * ratio;
     steps.push({
@@ -241,14 +272,14 @@ export function loMostRestrictive(steps: FunnelStep[]): { label: string; kept: n
   return cuts.length > 0 ? cuts[0] : null;
 }
 
-export function loScenarios(c: Criteria): Scenario[] {
-  const baseFunnel = loComputeFunnel(c);
+export function loScenarios(c: Criteria, calibrations?: CalibrationOverrides): Scenario[] {
+  const baseFunnel = loComputeFunnel(c, undefined, calibrations);
   const baseN = baseFunnel.finalN;
   const out: Scenario[] = [];
 
   const addScenario = (label: string, mod: Partial<Criteria>, exp: string, level: 'bajo' | 'medio' | 'alto') => {
     const patch = { ...c, ...mod };
-    const f = loComputeFunnel(patch);
+    const f = loComputeFunnel(patch, undefined, calibrations);
     const mult = f.finalN / Math.max(1, baseN);
     if (mult > 1.05) {
       out.push({ label, exp, mult, level, mod });
@@ -334,8 +365,12 @@ export function loScenarios(c: Criteria): Scenario[] {
   return out.sort((a, b) => b.mult - a.mult);
 }
 
-export function estimatePopulation(criteria: Criteria, aiData?: AICalibrationResult): EstimationResult {
-  const { steps, pct, finalN, base } = loComputeFunnel(criteria, aiData?.customMultipliers);
+export function estimatePopulation(
+  criteria: Criteria,
+  aiData?: AICalibrationResult,
+  calibrations?: CalibrationOverrides
+): EstimationResult {
+  const { steps, pct, finalN, base } = loComputeFunnel(criteria, aiData?.customMultipliers, calibrations);
   const rarityLevel = loRarityTier(pct);
   const mostRestrictiveFilter = loMostRestrictive(steps);
   const confidenceLevel: 'Alta' | 'Media' | 'Baja' | 'Demo' = pct < 0.2 ? 'Baja' : pct < 2 ? 'Media' : 'Alta';
@@ -349,7 +384,7 @@ export function estimatePopulation(criteria: Criteria, aiData?: AICalibrationRes
     };
   }
 
-  const whatIfSuggestions = aiData?.customWhatIfs || loScenarios(criteria);
+  const whatIfSuggestions = aiData?.customWhatIfs || loScenarios(criteria, calibrations);
 
   return {
     steps,

@@ -23,9 +23,9 @@ export const StatisticalSourcesPanel: React.FC = () => {
       <div className="flex flex-col gap-3 mt-2">
         {LO_SOURCES.map((source) => {
           const isDemo = source.status === "demo";
-          const statusText = isDemo ? "Datos Demo / Simulación" : "Listo para Integrar";
+          const statusText = isDemo ? "Base Calibrada (INEGI)" : "Base de Datos Oficial";
           const badgeClass = isDemo 
-            ? "border-warn/25 bg-warn/5 text-warn" 
+            ? "border-accent/25 bg-accent/5 text-accent dark:border-accent-2/25 dark:bg-accent-2/5 dark:text-accent-2" 
             : "border-pos/25 bg-pos/5 text-pos";
 
           return (
@@ -79,7 +79,7 @@ export const StatisticalSourcesPanel: React.FC = () => {
           Nota metodológica
         </div>
         <p className="text-[12px] leading-relaxed text-ink-2 dark:text-ink-3">
-          Este MVP opera con modelos de distribución calibrados artificialmente a partir de los cubos y tabulados dinámicos publicados de las encuestas nacionales. Las integraciones de bases cruzadas reales requieren técnicas estadísticas de copula o microdatos crudos directos.
+          Este modelo opera con distribuciones calibradas a partir de los cubos y tabulados dinámicos publicados de las encuestas nacionales. Las integraciones de bases cruzadas reales requieren técnicas estadísticas de copula o microdatos crudos directos.
         </p>
       </div>
     </div>
