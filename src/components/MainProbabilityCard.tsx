@@ -22,10 +22,19 @@ export const MainProbabilityCard: React.FC<MainProbabilityCardProps> = ({ result
                    : pct >= 0.1 ? `${Math.round(pct * 10)} de cada 1,000`
                    : pct >= 0.01 ? `${Math.round(pct * 100)} de cada 10,000`
                    : `${Math.round(pct * 1000)} de cada 100,000`;
-
   // Scale levels for rarity visual checklist
   const tierRank = tier.rank; // 1 to 6
   const tierTiers = ["Común", "Selectivo", "Muy Selectivo", "Estad. Raro", "Aguja", "Unicornio"];
+
+  // Dynamic font sizing for long percentage numbers
+  const numLen = formattedPct.length;
+  const fontSizeClass = numLen > 7 ? 'text-[64px]'
+                      : numLen > 5 ? 'text-[82px]'
+                      : numLen > 4 ? 'text-[96px]'
+                      : 'text-[114px]';
+  const percentTranslateClass = numLen > 7 ? 'translate-y-[-8px]'
+                              : numLen > 5 ? 'translate-y-[-12px]'
+                              : 'translate-y-[-18px]';
 
   return (
     <div className="lo-card relative overflow-hidden p-6 rounded-xl bg-elev-light dark:bg-elev-dark border border-ink/10 dark:border-ink-dark/10 shadow-shd-2 select-none lo-fade-in">
@@ -44,10 +53,10 @@ export const MainProbabilityCard: React.FC<MainProbabilityCardProps> = ({ result
 
         {/* Large Numeral */}
         <div className="flex items-baseline gap-1.5 my-1">
-          <span className="font-display font-normal tracking-[-0.045em] text-ink dark:text-ink-dark text-[114px] leading-[0.85]">
+          <span className={`font-display font-normal tracking-[-0.045em] text-ink dark:text-ink-dark ${fontSizeClass} leading-[0.85]`}>
             {formattedPct}
           </span>
-          <span className="font-display text-[44px] text-ink-3 dark:text-ink-4 select-none translate-y-[-18px]">
+          <span className={`font-display text-[44px] text-ink-3 dark:text-ink-4 select-none ${percentTranslateClass}`}>
             %
           </span>
         </div>

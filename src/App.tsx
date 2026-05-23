@@ -39,7 +39,7 @@ export const App: React.FC = () => {
   const [aiResult, setAiResult] = useState<AICalibrationResult | undefined>(undefined);
 
   const [tweaks, setTweaks] = useState<TweakConfig>({
-    dark: true,
+    dark: false,
     palette: PALETTES[0],
     headlineIdx: 0,
     showKeyboard: false,
@@ -272,10 +272,10 @@ export const App: React.FC = () => {
             </div>
 
             <div className="lo-scroll flex-1 pb-24" ref={scrollRef}>
-              {/* Responsive Layout Grid on Desktop, simple scroll on Mobile */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-w-5xl mx-auto items-start">
+              {/* Responsive Layout Grid on Desktop, simple stack on Mobile/Simulator */}
+              <div className={`grid grid-cols-1 ${isFrameMode ? '' : 'lg:grid-cols-2'} gap-6 p-6 max-w-5xl mx-auto items-start`}>
                 {/* Left Column (Main Result) */}
-                <div className="lg:col-span-6 flex flex-col gap-6" data-sect="resumen">
+                <div className="flex flex-col gap-6" data-sect="resumen">
                   <MainProbabilityCard result={estimationResult} />
                   
                   {/* Search Recap Chips */}
@@ -331,7 +331,7 @@ export const App: React.FC = () => {
                 </div>
 
                 {/* Right Column (Funnel, Reality Check, What-if, Sources) */}
-                <div className="lg:col-span-6 flex flex-col gap-8">
+                <div className="flex flex-col gap-8">
                   <div data-sect="funnel">
                     <PopulationFunnel result={estimationResult} />
                   </div>
@@ -416,7 +416,7 @@ export const App: React.FC = () => {
         </IOSDevice>
       ) : (
         /* Premium Responsive Web Mode occupying the screen dynamically */
-        <div className="w-full max-w-[500px] h-[874px] rounded-xl overflow-hidden shadow-shd-2 border border-ink/10 dark:border-ink-dark/10 bg-bg-light dark:bg-bg-dark relative">
+        <div className="w-full max-w-[500px] lg:max-w-[1024px] h-[874px] rounded-xl overflow-hidden shadow-shd-2 border border-ink/10 dark:border-ink-dark/10 bg-bg-light dark:bg-bg-dark relative flex flex-col">
           {renderScreen()}
         </div>
       )}
