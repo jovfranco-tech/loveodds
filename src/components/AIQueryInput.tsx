@@ -4,13 +4,10 @@ import { LoIcon } from './Icons';
 interface AIQueryInputProps {
   onSubmit: (text: string) => void;
   onExample: (prompt: string, presetName: string) => void;
-  apiKey: string;
-  setApiKey: (key: string) => void;
 }
 
-export const AIQueryInput: React.FC<AIQueryInputProps> = ({ onSubmit, onExample, apiKey, setApiKey }) => {
+export const AIQueryInput: React.FC<AIQueryInputProps> = ({ onSubmit, onExample }) => {
   const [text, setText] = useState("");
-  const [showKeyInput, setShowKeyInput] = useState(false);
 
   const examples = [
     {
@@ -49,60 +46,8 @@ export const AIQueryInput: React.FC<AIQueryInputProps> = ({ onSubmit, onExample,
           Cuéntale al <i className="font-serif italic font-normal text-accent dark:text-accent-3">analista</i> qué buscas.
         </h2>
         <p className="font-ui text-[14.5px] leading-relaxed text-ink-2 dark:text-ink-3">
-          Escribe tus preferencias en lenguaje natural. Si configuras una clave de OpenAI, usará IA Real para extraer y calibrar tus criterios.
+          Escribe tus preferencias en lenguaje natural. El analista demográfico las interpretará al instante para calcular la rareza estadística de tu pareja ideal.
         </p>
-      </div>
-
-      {/* Secure OpenAI Settings Card */}
-      <div className="rounded-lg border border-ink/10 dark:border-white/10 bg-deep-light/20 dark:bg-deep-dark/20 p-4 flex flex-col gap-3">
-        <div 
-          onClick={() => setShowKeyInput(!showKeyInput)}
-          className="flex justify-between items-center cursor-pointer select-none"
-        >
-          <div className="flex items-center gap-2">
-            <LoIcon name="lock" size={14} className="text-ink-3 dark:text-ink-4" />
-            <span className="font-mono text-[10px] tracking-wider uppercase font-semibold text-ink-2 dark:text-ink-3">
-              Configurar IA Real (OpenAI GPT)
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {apiKey ? (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pos">
-                <span className="w-1.5 h-1.5 rounded-full bg-pos animate-pulse" />
-                IA Real Activa
-              </span>
-            ) : (
-              <span className="text-[11px] font-semibold text-ink-3 dark:text-ink-4">
-                Modo Simulado
-              </span>
-            )}
-            <LoIcon name={showKeyInput ? 'arrow-down' : 'chevron-right'} size={12} className="text-ink-3 dark:text-ink-4" />
-          </div>
-        </div>
-
-        {showKeyInput && (
-          <div className="flex flex-col gap-2.5 pt-3 border-t border-ink/5 dark:border-white/5 lo-fade-in">
-            <p className="text-[11.5px] leading-relaxed text-ink-3 dark:text-ink-4">
-              Tu API Key se almacena localmente y se envía de forma directa y cifrada a OpenAI. Nunca viaja a servidores de terceros.
-            </p>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-proj-..."
-              className="w-full h-9 px-3 rounded border border-ink/15 dark:border-white/15 bg-elev-light dark:bg-elev-dark text-xs outline-none text-ink dark:text-ink-dark placeholder-ink-4 dark:placeholder-ink-3 font-mono"
-            />
-            {apiKey && (
-              <button
-                onClick={() => setApiKey('')}
-                className="self-end text-[11px] font-semibold text-accent dark:text-accent-3 hover:underline"
-              >
-                Remover clave
-              </button>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Modern AI Input Card */}

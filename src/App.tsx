@@ -173,8 +173,6 @@ export const App: React.FC = () => {
               <AIQueryInput
                 onSubmit={handleQuerySubmit}
                 onExample={handleApplyPreset}
-                apiKey={apiKey}
-                setApiKey={setApiKeySecurely}
               />
             </div>
           </div>
