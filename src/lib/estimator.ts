@@ -312,6 +312,25 @@ export function loScenarios(c: Criteria): Scenario[] {
     );
   }
 
+  // Gamificación sarcástica / Reality Check extrema para perfiles hiper-específicos
+  const pct = baseFunnel.pct;
+  if (pct < 0.2) {
+    out.push({
+      label: "Comprar un boleto de lotería",
+      exp: "Estadísticamente, tienes más posibilidades de ganar el premio mayor de la Lotería Nacional que de encontrar este perfil exacto de forma casual en la calle hoy.",
+      mult: 15.0,
+      level: "alto",
+      mod: {}
+    });
+    out.push({
+      label: "Ampliar búsqueda a la Estación Espacial",
+      exp: "Con 7 astronautas en promedio flotando en órbita, expandir tu rango al espacio exterior ofrece un nivel de probabilidad absoluta muy similar.",
+      mult: 5.0,
+      level: "medio",
+      mod: {}
+    });
+  }
+
   return out.sort((a, b) => b.mult - a.mult);
 }
 
