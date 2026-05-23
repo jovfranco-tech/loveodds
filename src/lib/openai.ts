@@ -10,6 +10,8 @@ export interface AICalibrationResult {
     ingreso?: number;
     estatura?: number;
     escolaridad?: number;
+    estiloVida?: number;
+    complexion?: number;
   };
   realityCheckHeadline?: string;
   realityCheckDetail?: string;
@@ -34,7 +36,8 @@ Debes responder ÚNICAMENTE con un objeto JSON que cumpla con la siguiente estru
     "nacionalidad": string (país de origen, e.g. "Colombia", null si no se especifica),
     "escolaridad": "Bachillerato+" | "Licenciatura+" | "Posgrado+" | null (usa null si no se especifica),
     "ocupacion": string (profesión, e.g. "Ingeniero", null si no se especifica),
-    "estiloVida": "Fitness" | "Deportista" | "Cualquiera" | null (usa null si no se especifica, se detecta por palabras clave como fitness, deportista, nadador, atleta, etc.)
+    "estiloVida": "Fitness" | "Deportista" | "Cualquiera" | null (usa null si no se especifica, se detecta por palabras clave como fitness, deportista, nadador, atleta, etc.),
+    "complexion": "Delgada/Normal" | "Atlética" | "Robusta" | null (usa null si no se especifica, se detecta por palabras como delgado, flaco, normal, atlético, marcado, robusto, sobrepeso, gordo, etc.)
   },
   "customMultipliers": {
     // Proporción (entre 0.0 y 1.0) de personas que CUMPLEN este criterio específico en México.
@@ -46,7 +49,8 @@ Debes responder ÚNICAMENTE con un objeto JSON que cumpla con la siguiente estru
     "ingreso": number,      // Ingreso decílico (e.g. >$100k es aprox 0.015, >$80k es 0.035, >$50k es 0.10)
     "estatura": number,     // Estatura normalizada en México (e.g. hombre >= 1.80m es aprox 0.058, mujer >= 1.70m es 0.015)
     "escolaridad": number,  // Nivel educativo profesional (e.g. Licenciatura+ es aprox 0.34)
-    "estiloVida": number    // Hábitos de estilo de vida/deporte (e.g. Fitness es aprox 0.25, Deportista es aprox 0.08)
+    "estiloVida": number,   // Hábitos de estilo de vida/deporte (e.g. Fitness es aprox 0.25, Deportista es aprox 0.08)
+    "complexion": number    // Complexión corporal basada en ENSANUT (e.g. Delgada/Normal es aprox 0.25, Atlética es 0.15, Robusta es 0.75)
   },
   "realityCheckHeadline": "Frase de síntesis estadística e ingeniosa corta (máx 15 palabras)",
   "realityCheckDetail": "Párrafo explicativo detallado y profesional (máx 60 palabras) del por qué la combinación es común o rara y qué factor impacta más de forma respetuosa.",

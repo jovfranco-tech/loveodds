@@ -97,6 +97,13 @@ export const ParsedCriteriaPanel: React.FC<ParsedCriteriaPanelProps> = ({ criter
       pick: ["Sin filtro", "Fitness", "Deportista"],
       set: (v: string) => updateCriteria({ estiloVida: v === "Sin filtro" ? null : v as 'Fitness' | 'Deportista' })
     },
+    {
+      k: "Complexión / Peso",
+      v: c.complexion || "Sin filtro",
+      icon: "user",
+      pick: ["Sin filtro", "Delgada/Normal", "Atlética", "Robusta"],
+      set: (v: string) => updateCriteria({ complexion: v === "Sin filtro" ? null : v as 'Delgada/Normal' | 'Atlética' | 'Robusta' })
+    },
   ];
 
   return (

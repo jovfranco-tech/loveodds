@@ -12,6 +12,7 @@ export interface AICalibrationResult {
     estatura?: number;
     escolaridad?: number;
     estiloVida?: number;
+    complexion?: number;
   };
   realityCheckHeadline?: string;
   realityCheckDetail?: string;
@@ -40,6 +41,9 @@ export interface CalibrationOverrides {
     [key: string]: number;
   };
   lifestyle?: {
+    [key: string]: number;
+  };
+  complexion?: {
     [key: string]: number;
   };
 }
@@ -253,6 +257,26 @@ export function loComputeFunnel(
     steps.push({
       label: `Hábitos: ${c.estiloVida}`,
       sub: "CONADE · Cultura Física y Deporte",
+      n: cur,
+      kept: ratio,
+    });
+  }
+
+  // 9. Complexion / Weight / Body composition (ENSANUT)
+  if (c.complexion && (c.complexion as string) !== 'Cualquiera') {
+    let r = 1.0;
+    const cMap = calibrations?.complexion ?? {
+      "Delgada/Normal": 0.25, // 25% healthy weight/slim in Mexican adult demographic
+      "Atlética": 0.15,       // 15% athletic/fit/muscular composition
+      "Robusta": 0.75         // 75% overweight/obese or robust build
+    };
+    r = cMap[c.complexion] ?? 1.0;
+
+    const ratio = customMultipliers?.complexion ?? r;
+    cur = cur * ratio;
+    steps.push({
+      label: `Complexión: ${c.complexion}`,
+      sub: "INSP · ENSANUT composición corporal",
       n: cur,
       kept: ratio,
     });

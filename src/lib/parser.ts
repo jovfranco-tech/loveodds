@@ -131,6 +131,16 @@ export function parseNaturalLanguageQuery(query: string): Criteria {
     estiloVida = 'Deportista';
   }
 
+  // 12. Complexion
+  let complexion: 'Delgada/Normal' | 'Atlética' | 'Robusta' | null = null;
+  if (/\b(delgad[oa]|flac[oa]|normal|peso saludable|esbelt[oa])\b/.test(q)) {
+    complexion = 'Delgada/Normal';
+  } else if (/\b(atl[eé]tic[oa]|muscular|marcad[oa]|marcadit[oa]|fit)\b/.test(q)) {
+    complexion = 'Atlética';
+  } else if (/\b(robust[oa]|llenit[oa]|sobrepeso|gord[oa]|grues[oa])\b/.test(q)) {
+    complexion = 'Robusta';
+  }
+
   return {
     busca,
     ubicacion,
@@ -144,5 +154,6 @@ export function parseNaturalLanguageQuery(query: string): Criteria {
     escolaridad,
     ocupacion,
     estiloVida,
+    complexion,
   };
 }

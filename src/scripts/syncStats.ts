@@ -68,6 +68,15 @@ const baselineCalibrations = {
     "Posgrado+": 0.06,
     "Bachillerato+": 0.70
   },
+  lifestyle: {
+    "Fitness": 0.25,
+    "Deportista": 0.08
+  },
+  complexion: {
+    "Delgada/Normal": 0.25,
+    "Atlética": 0.15,
+    "Robusta": 0.75
+  },
   updatedAt: new Date().toISOString()
 };
 

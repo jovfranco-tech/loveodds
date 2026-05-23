@@ -11,6 +11,7 @@ export interface Criteria {
   escolaridad: 'Bachillerato+' | 'Licenciatura+' | 'Posgrado+' | null;
   ocupacion: string | null;
   estiloVida: 'Fitness' | 'Deportista' | 'Cualquiera' | null;
+  complexion: 'Delgada/Normal' | 'Atlética' | 'Robusta' | null;
 }
 
 export interface FunnelStep {

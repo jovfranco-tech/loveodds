@@ -70,6 +70,7 @@ export const LO_DEFAULT_CRITERIA: Criteria = {
   escolaridad: "Licenciatura+",
   ocupacion: null,
   estiloVida: null,
+  complexion: null,
 };
 
 export const LO_EXAMPLE_B: Criteria = {
@@ -85,6 +86,7 @@ export const LO_EXAMPLE_B: Criteria = {
   escolaridad: null,
   ocupacion: null,
   estiloVida: null,
+  complexion: null,
 };
 
 export const PALETTES = [
