@@ -4,18 +4,27 @@ import { LoIcon } from './Icons';
 interface LoadingStateProps {
   type: 'parsing' | 'calculating';
   queryText?: string;
+  hasRealAI?: boolean;
   onDone: () => void;
 }
 
-export const LoadingState: React.FC<LoadingStateProps> = ({ type, queryText, onDone }) => {
+export const LoadingState: React.FC<LoadingStateProps> = ({ type, queryText, hasRealAI = false, onDone }) => {
   const [stage, setStage] = useState(0);
 
-  const parsingStages = [
+  const localParsingStages = [
     "Limpiando consulta de búsqueda",
     "Identificando ubicación geográfica",
     "Detectando edad y género objetivo",
     "Mapeando ingreso y estatura",
     "Consultando bases demográficas de fuentes",
+  ];
+
+  const realAIParsingStages = [
+    "Iniciando conexión cifrada con OpenAI API",
+    "Analizando intenciones semánticas con GPT-4o-mini",
+    "Calibrando multiplicadores en base a INEGI y ENIGH",
+    "Estructurando criterios demográficos cruzados",
+    "Redactando Reality Check personalizado e ingenioso",
   ];
 
   const calculatingStages = [
@@ -25,8 +34,11 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ type, queryText, onD
     "Validando residencia legal · CONAPO 2024",
   ];
 
-  const currentStages = type === 'parsing' ? parsingStages : calculatingStages;
-  const tickMs = type === 'parsing' ? 420 : 350;
+  const currentStages = type === 'parsing' 
+    ? (hasRealAI ? realAIParsingStages : localParsingStages) 
+    : calculatingStages;
+    
+  const tickMs = type === 'parsing' ? (hasRealAI ? 580 : 420) : 350;
 
   useEffect(() => {
     setStage(0);
@@ -42,7 +54,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ type, queryText, onD
     }, tickMs);
 
     return () => clearInterval(id);
-  }, [type]);
+  }, [type, hasRealAI]);
 
   return (
     <div className="flex flex-col gap-8 py-10 px-6 lo-fade-in text-center">

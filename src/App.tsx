@@ -3,7 +3,7 @@ import { Criteria, TweakConfig } from './types';
 import { LO_DEFAULT_CRITERIA, LO_EXAMPLE_B, PALETTES } from './data/mockStats';
 import { parseNaturalLanguageQuery } from './lib/parser';
 import { estimatePopulation, loFmtMoney } from './lib/estimator';
-
+import { queryOpenAI, AICalibrationResult } from './lib/openai';
 
 // Components
 import { AppHeader } from './components/AppHeader';
@@ -29,7 +29,14 @@ export const App: React.FC = () => {
   const [screen, setScreen] = useState<string>("hero");
   const [criteria, setCriteria] = useState<Criteria>({ ...LO_DEFAULT_CRITERIA });
   const [inputText, setInputText] = useState("");
-  const [isFrameMode, setIsFrameMode] = useState(false); // Toggle between full web responsive and iPhone simulator!
+  const [isFrameMode, setIsFrameMode] = useState(false);
+
+  // Secure API key state, persisted in sessionStorage
+  const [apiKey, setApiKey] = useState<string>(() => {
+    return sessionStorage.getItem('loveodds_openai_key') || '';
+  });
+
+  const [aiResult, setAiResult] = useState<AICalibrationResult | undefined>(undefined);
 
   const [tweaks, setTweaks] = useState<TweakConfig>({
     dark: true,
@@ -41,6 +48,16 @@ export const App: React.FC = () => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState("resumen");
+
+  // Keep sessionStorage in sync
+  const setApiKeySecurely = (key: string) => {
+    setApiKey(key);
+    if (key) {
+      sessionStorage.setItem('loveodds_openai_key', key);
+    } else {
+      sessionStorage.removeItem('loveodds_openai_key');
+    }
+  };
 
   // Dynamically set CSS custom variables for accent palette on mount / tweak change
   useEffect(() => {
@@ -71,19 +88,41 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Perform estimation
-  const estimationResult = estimatePopulation(criteria);
+  // Compute stats funnel & reality check using custom AI override if available!
+  const estimationResult = estimatePopulation(criteria, aiResult);
 
   // Flow controllers
-  const handleQuerySubmit = (text: string) => {
+  const handleQuerySubmit = async (text: string) => {
     setInputText(text);
-    const parsed = parseNaturalLanguageQuery(text);
-    setCriteria(parsed);
     go("parsing");
+    
+    // Clear any previous AI calibrations first
+    setAiResult(undefined);
+
+    if (apiKey.trim()) {
+      try {
+        // Query real OpenAI endpoint in background during loader screen
+        const result = await queryOpenAI(text, apiKey);
+        setCriteria(result.criteria);
+        setAiResult(result);
+      } catch (err) {
+        console.error("OpenAI failed, falling back to local regex parser:", err);
+        // Fallback to local mode
+        const parsed = parseNaturalLanguageQuery(text);
+        setCriteria(parsed);
+        setAiResult(undefined);
+      }
+    } else {
+      // Local Mode
+      const parsed = parseNaturalLanguageQuery(text);
+      setCriteria(parsed);
+      setAiResult(undefined);
+    }
   };
 
   const handleApplyPreset = (prompt: string, preset: string) => {
     setInputText(prompt);
+    setAiResult(undefined);
     if (preset === "B") {
       setCriteria({ ...LO_EXAMPLE_B });
     } else {
@@ -127,6 +166,8 @@ export const App: React.FC = () => {
               <AIQueryInput
                 onSubmit={handleQuerySubmit}
                 onExample={handleApplyPreset}
+                apiKey={apiKey}
+                setApiKey={setApiKeySecurely}
               />
             </div>
           </div>
@@ -139,8 +180,8 @@ export const App: React.FC = () => {
               <LoadingState
                 type="parsing"
                 queryText={inputText}
+                hasRealAI={!!apiKey}
                 onDone={() => {
-                  // If result is empty or 0 population base, show empty
                   if (estimationResult.base === 0) {
                     go("empty");
                   } else {
@@ -177,6 +218,7 @@ export const App: React.FC = () => {
             <div className="lo-scroll flex-1">
               <LoadingState
                 type="calculating"
+                hasRealAI={!!apiKey}
                 onDone={() => go("result")}
               />
             </div>
@@ -318,6 +360,7 @@ export const App: React.FC = () => {
               <button
                 onClick={() => {
                   setCriteria({ ...LO_DEFAULT_CRITERIA });
+                  setAiResult(undefined);
                   setInputText("");
                   go("input");
                 }}
@@ -385,10 +428,9 @@ export const App: React.FC = () => {
         screen={screen}
         setScreen={(s) => {
           setScreen(s);
-          if (s === "parsing" || s === "calculating") {
-            // progress loader screens needs auto timer reset
-          }
         }}
+        apiKey={apiKey}
+        setApiKey={setApiKeySecurely}
       />
     </div>
   );

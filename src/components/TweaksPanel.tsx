@@ -8,9 +8,11 @@ interface TweaksPanelProps {
   setTweak: <K extends keyof TweakConfig>(key: K, val: TweakConfig[K]) => void;
   screen: string;
   setScreen: (s: string) => void;
+  apiKey: string;
+  setApiKey: (key: string) => void;
 }
 
-export const TweaksPanel: React.FC<TweaksPanelProps> = ({ t, setTweak, screen, setScreen }) => {
+export const TweaksPanel: React.FC<TweaksPanelProps> = ({ t, setTweak, screen, setScreen, apiKey, setApiKey }) => {
   const [open, setOpen] = useState(false);
 
   const toggleOpen = () => setOpen(!open);
@@ -127,6 +129,23 @@ export const TweaksPanel: React.FC<TweaksPanelProps> = ({ t, setTweak, screen, s
                 <option value="result">Resultado</option>
                 <option value="share">Share Card</option>
               </select>
+            </div>
+
+            {/* OpenAI API Key Settings Tweak */}
+            <div className="flex flex-col gap-2 pt-2.5 border-t border-ink/10 dark:border-white/10">
+              <div className="flex justify-between items-center select-none">
+                <span className="font-semibold">OpenAI API Key</span>
+                {apiKey && (
+                  <span className="text-[9px] font-bold text-pos uppercase">Activa</span>
+                )}
+              </div>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-proj-..."
+                className="w-full h-8 px-2.5 rounded border border-ink/15 dark:border-white/15 bg-elev-light dark:bg-elev-dark text-[11px] outline-none text-ink dark:text-ink-dark placeholder-ink-4 dark:placeholder-ink-3 font-mono"
+              />
             </div>
           </div>
         </div>
