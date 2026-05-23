@@ -8,6 +8,13 @@
   <!-- Meta SEO -->
   <meta name="description" content="Calcula la rareza estadística de tu perfil o estándar romántico en México con microdatos demográficos." />
 
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D171A" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="https://loveodds-mx.vercel.app/apple-touch-icon.png" />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,6 +23,15 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('PWA Service Worker registered successfully:', reg.scope))
+          .catch(err => console.log('PWA Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
 

@@ -1,0 +1,23 @@
+{
+  "name": "LoveOdds MX",
+  "short_name": "LoveOdds",
+  "description": "Calcula la rareza demográfica de tu estándar romántico en México.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1D171A",
+  "theme_color": "#1D171A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://loveodds-mx.vercel.app/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "https://loveodds-mx.vercel.app/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -134,3 +134,17 @@
   color: var(--ink);
   border-bottom-color: var(--accent);
 }
+
+/* Fluid Light/Dark Mode Transitions */
+.lo-app, 
+.lo-app div, 
+.lo-app span, 
+.lo-app p, 
+.lo-app h1, 
+.lo-app h2, 
+.lo-app h3, 
+.lo-app button, 
+.lo-app svg, 
+.lo-stage {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease;
+}

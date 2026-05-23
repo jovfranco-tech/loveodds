@@ -1,10 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { EstimationResult } from '../types';
 import { loFmtNum } from '../lib/estimator';
+import { LoIcon } from './Icons';
 
 interface PopulationFunnelProps {
   result: EstimationResult;
 }
+
+const getStepIcon = (label: string): string => {
+  const l = label.toLowerCase();
+  if (l.includes("universo") || l.includes("personas")) return "globe";
+  if (l.includes("busca") || l.includes("edad")) return "user";
+  if (l.includes("ubicación") || l.includes("estado") || l.includes("soltero") || l.includes("soltera") || l.includes("divorciado") || l.includes("divorciada")) return "pin";
+  if (l.includes("hijos")) return "user";
+  if (l.includes("estatura") || l.includes("altura")) return "ruler";
+  if (l.includes("ingreso") || l.includes("ingresos")) return "wallet";
+  if (l.includes("nacionalidad") || l.includes("origen")) return "globe";
+  if (l.includes("escolaridad") || l.includes("educación")) return "edit";
+  if (l.includes("hábitos") || l.includes("estilo de vida") || l.includes("fitness") || l.includes("deporte")) return "heart-line";
+  if (l.includes("complexión") || l.includes("peso")) return "sparkle";
+  return "sparkle";
+};
 
 export const PopulationFunnel: React.FC<PopulationFunnelProps> = ({ result }) => {
   const [mounted, setMounted] = useState(false);
@@ -45,10 +61,11 @@ export const PopulationFunnel: React.FC<PopulationFunnelProps> = ({ result }) =>
             <div key={idx} className="flex flex-col gap-1">
               {/* Row description */}
               <div className="flex justify-between items-baseline gap-4">
-                <div className="flex items-baseline gap-2 min-w-0 flex-1">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                   <span className="font-mono text-[9px] tracking-wide text-ink-3 dark:text-ink-4">
                     {String(idx).padStart(2, '0')}
                   </span>
+                  <LoIcon name={getStepIcon(step.label)} size={12} className="text-ink-3 dark:text-ink-4 shrink-0" />
                   <span className="text-[13.5px] font-semibold text-ink dark:text-ink-dark truncate">
                     {step.label}
                   </span>
